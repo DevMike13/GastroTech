@@ -6,28 +6,28 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-        backgroundColor: 'gray'
+    },
+    keyboardAvoid:{
+        flex: 1
+    },
+    scrollView:{
+        flexGrow: 1
     },
     gradientBackground:{
         height: '100%',
         width: '100%'
     },
-    container:{
-        height: '100%',
+    contentContainer:{
         width: '100%',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: SIZES.xxxLarge
-    },
-    contentContainer:{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: SIZES.large,
-        backgroundColor: 'blue'
+        paddingHorizontal: SIZES.large
     },
     logoImage:{
-        width: 200,
+        width: 150,
+        height: 150
     },
     inputContainer:{
         justifyContent: "center",
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     },
     inputWrapper: {
         flex: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
         justifyContent: "center",
         alignItems: "center",
         borderRadius: SIZES.medium,
@@ -51,30 +51,12 @@ const styles = StyleSheet.create({
         height: "100%",
         paddingHorizontal: SIZES.medium,
     },
-    forgotContainer:{
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: SIZES.large,
-    },
-    forgotButtonWrapper:{
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: SIZES.xSmall,
-    },
-    forgotText:{
-        fontFamily: FONT.medium,
-        color: COLORS.white,
-        textDecorationLine: 'underline'
-    },
     buttonContainer:{
         width: '100%',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        marginVertical: SIZES.xxLarge,
         paddingHorizontal: SIZES.large
     },
     button:{

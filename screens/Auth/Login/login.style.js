@@ -6,19 +6,16 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
         paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-        backgroundColor: 'gray'
-    },
-    gradientBackground:{
-        height: '100%',
-        width: '100%'
-    },
-    container:{
         height: '100%',
         width: '100%',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         gap: SIZES.xxxLarge
+    },
+    gradientBackground:{
+        height: '100%',
+        width: '100%'
     },
     contentContainer:{
         display: 'flex',
@@ -34,7 +31,7 @@ const styles = StyleSheet.create({
     },
     inputWrapper: {
         flex: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
         justifyContent: "center",
         alignItems: "center",
         borderRadius: SIZES.medium,

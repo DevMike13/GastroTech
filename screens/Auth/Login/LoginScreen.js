@@ -9,6 +9,10 @@ const LoginScreen = ({ navigation }) => {
 
   const handleGoToRegistration = () => {
     navigation.navigate('Register')
+  };
+
+  const handleGoToDashboard = () => {
+    navigation.navigate('Dashboard')
   };  
   
   const [email, setEmail] = useState('');
@@ -61,7 +65,7 @@ const LoginScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={handleGoToDashboard}>
               <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
           </View>
