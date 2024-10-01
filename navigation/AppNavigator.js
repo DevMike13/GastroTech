@@ -6,6 +6,7 @@ const Stack = createStackNavigator();
 
 import GuideScreen from '../screens/Guide/GuideScreen';
 import LoginScreen from '../screens/Auth/Login/LoginScreen';
+import RegisterScreen from '../screens/Auth/Register/RegisterScreen';
 
 const AppNavigator = () => {
     
@@ -20,6 +21,11 @@ const AppNavigator = () => {
                 <Stack.Screen 
                     name="Login" 
                     component={LoginScreen} 
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen 
+                    name="Register" 
+                    component={RegisterScreen} 
                     options={{ headerShown: false }}
                 />
             </Stack.Navigator>

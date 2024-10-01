@@ -3,17 +3,9 @@ import {React, useState} from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
-import styles from './login.style';
+import styles from './register.style';
 
-const LoginScreen = ({ navigation }) => {
-
-  const handleGoToRegistration = () => {
-    navigation.navigate('Register')
-  };  
-  
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
+const RegisterScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -24,16 +16,17 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.container}>
           <View style={styles.contentContainer}>
             <Image
-              source={require('../../../assets/images/login-text.png')}
+              source={require('../../../assets/images/logo.png')}
               resizeMode='contain'
+              style={styles.logoImage}
             />
             <View style={styles.inputContainer}>
               <View style={styles.inputWrapper}>
                 <TextInput
                   style={styles.inInput}
                   placeholder='Email'
-                  value={email}
-                  onChangeText={setEmail}
+                //   value={email}
+                //   onChangeText={setEmail}
                   keyboardType="email-address"
                   textContentType='emailAddress'
                   placeholderTextColor="white"
@@ -45,8 +38,8 @@ const LoginScreen = ({ navigation }) => {
                 <TextInput
                   style={styles.inInput}
                   placeholder='Password'
-                  value={password}
-                  onChangeText={setPassword}
+                //   value={password}
+                //   onChangeText={setPassword}
                   secureTextEntry={true}
                   placeholderTextColor="white"
                 />
@@ -69,7 +62,7 @@ const LoginScreen = ({ navigation }) => {
             <Text style={styles.signupText}>
               Don't have an account?
             </Text>
-            <TouchableOpacity onPress={handleGoToRegistration}>
+            <TouchableOpacity>
               <Text style={styles.signupButtonText}>
                 Sign Up
               </Text>
@@ -81,4 +74,4 @@ const LoginScreen = ({ navigation }) => {
   )
 }
 
-export default LoginScreen
+export default RegisterScreen

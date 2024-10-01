@@ -23,7 +23,11 @@ const styles = StyleSheet.create({
     contentContainer:{
         display: 'flex',
         flexDirection: 'column',
-        gap: SIZES.large
+        gap: SIZES.large,
+        backgroundColor: 'blue'
+    },
+    logoImage:{
+        width: 200,
     },
     inputContainer:{
         justifyContent: "center",
