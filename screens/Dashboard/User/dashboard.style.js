@@ -1,6 +1,6 @@
 import { StyleSheet, Platform, StatusBar } from "react-native";
 
-import { COLORS, FONT, SIZES, SHADOWS } from "../../assets/theme/theme";
+import { COLORS, FONT, SIZES, SHADOWS } from "../../../assets/theme/theme";
 
 const styles = StyleSheet.create({
     container:{

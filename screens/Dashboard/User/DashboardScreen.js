@@ -16,7 +16,7 @@ const DashboardScreen = () => {
         <View style={styles.navigationButtonContainer}>
             <TouchableOpacity style={styles.navigationButton}>
                 <Image
-                    source={require('../../assets/images/smoke.png')}
+                    source={require('../../../assets/images/smoke.png')}
                     resizeMode='contain'
                     style={styles.buttonIcon}
                 />
@@ -31,7 +31,7 @@ const DashboardScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.navigationButton}>
                 <Image
-                    source={require('../../assets/images/co2.png')}
+                    source={require('../../../assets/images/co2.png')}
                     resizeMode='contain'
                     style={styles.buttonIcon}
                 />
@@ -49,7 +49,7 @@ const DashboardScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.navigationButton}>
                 <Image
-                    source={require('../../assets/images/temperature.png')}
+                    source={require('../../../assets/images/temperature.png')}
                     resizeMode='contain'
                     style={styles.buttonIcon}
                 />
@@ -67,7 +67,7 @@ const DashboardScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.navigationButton}>
                 <Image
-                    source={require('../../assets/images/fire.png')}
+                    source={require('../../../assets/images/fire.png')}
                     resizeMode='contain'
                     style={styles.buttonIcon}
                 />
@@ -83,7 +83,7 @@ const DashboardScreen = () => {
         </View>
         <View style={styles.modelContainer}>
             <Image
-                source={require('../../assets/images/model.png')}
+                source={require('../../../assets/images/model.png')}
                 resizeMode='contain'
                 style={styles.modelImage}
             />

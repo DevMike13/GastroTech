@@ -7,6 +7,10 @@ import styles from './login.style';
 
 const LoginScreen = ({ navigation }) => {
 
+  const handleGoToForgot = () => {
+    navigation.navigate('Forgot')
+  };
+
   const handleGoToRegistration = () => {
     navigation.navigate('Register')
   };
@@ -58,7 +62,7 @@ const LoginScreen = ({ navigation }) => {
             </View>
           </View>
           <View style={styles.forgotContainer}>
-            <TouchableOpacity style={styles.forgotButtonWrapper}>
+            <TouchableOpacity style={styles.forgotButtonWrapper} onPress={handleGoToForgot}>
               <Text style={styles.forgotText}>
                 Forgot Password?
               </Text>
