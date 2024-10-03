@@ -16,6 +16,10 @@ import RegisterScreen from '../screens/Auth/Register/RegisterScreen';
 import ForgotPasswordScreen from '../screens/Auth/ForgotPassword/ForgotPasswordScreen';
 import DashboardScreen from '../screens/Dashboard/User/DashboardScreen';
 import DeviceScreen from '../screens/Device/DeviceScreen';
+import AboutScreen from '../screens/About/AboutScreen';
+import PrivacyPolicyScreen from '../screens/About/PrivacyPolicy/PrivacyPolicyScreen';
+import SystemScreen from '../screens/About/System/SystemScreen';
+import AccountScreen from '../screens/Account/AccountScreen';
 
 const AppNavigator = () => {
     
@@ -100,7 +104,10 @@ const AppNavigator = () => {
                                             leadingIcon="account-outline"
                                             rippleColor={COLORS.gray4}
                                             titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
-                                            onPress={() => { closeMenu(); alert('Account'); }} 
+                                            onPress={() => { 
+                                                closeMenu();
+                                                navigation.navigate('Account'); 
+                                             }} 
                                             title="Account" 
                                         />
                                         <Menu.Item 
@@ -121,7 +128,10 @@ const AppNavigator = () => {
                                             leadingIcon="information-outline"
                                             rippleColor={COLORS.gray4}
                                             titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
-                                            onPress={() => { closeMenu(); alert('About'); }} 
+                                            onPress={() => { 
+                                                closeMenu(); 
+                                                navigation.navigate('About');
+                                            }} 
                                             title="About" 
                                         />
                                     </Menu>
@@ -144,6 +154,86 @@ const AppNavigator = () => {
                                     <Ionicons name="arrow-back-outline" size={32} color="white" />
                                     <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
                                         GastroTech
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })}
+                    />
+                    <Stack.Screen 
+                        name="About" 
+                        component={AboutScreen} 
+                        options={({ navigation }) => ({
+                            headerShown: true,
+                            headerTitle: '',
+                            headerShadowVisible: true,
+                            headerStyle: {
+                                backgroundColor: '#11774e'
+                            },
+                            headerLeft: () => (
+                                <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                    <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                    <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                        About
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })}
+                    />
+                    <Stack.Screen 
+                        name="PrivacyPolicy" 
+                        component={PrivacyPolicyScreen} 
+                        options={({ navigation }) => ({
+                            headerShown: true,
+                            headerTitle: '',
+                            headerShadowVisible: true,
+                            headerStyle: {
+                                backgroundColor: '#11774e'
+                            },
+                            headerLeft: () => (
+                                <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                    <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                    <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                        Privacy Policy
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })}
+                    />
+                    <Stack.Screen 
+                        name="System" 
+                        component={SystemScreen} 
+                        options={({ navigation }) => ({
+                            headerShown: true,
+                            headerTitle: '',
+                            headerShadowVisible: true,
+                            headerStyle: {
+                                backgroundColor: '#11774e'
+                            },
+                            headerLeft: () => (
+                                <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                    <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                    <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                        System Information
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })}
+                    />
+                    <Stack.Screen 
+                        name="Account" 
+                        component={AccountScreen} 
+                        options={({ navigation }) => ({
+                            headerShown: true,
+                            headerTitle: '',
+                            headerShadowVisible: true,
+                            headerStyle: {
+                                backgroundColor: '#11774e'
+                            },
+                            headerLeft: () => (
+                                <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                    <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                    <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                        Account
                                     </Text>
                                 </TouchableOpacity>
                             )
