@@ -2,6 +2,9 @@ import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput } from 're
 import {React, useState} from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
+
+import { auth, firestore } from '../../../firebase';
 
 import styles from './login.style';
 
@@ -21,6 +24,30 @@ const LoginScreen = ({ navigation }) => {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const userCredential = await auth.signInWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+
+      const userDoc = await firestore.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        console.log('User data:', userData);
+        // Here you can navigate to the home screen and pass user data if needed
+        // navigation.navigate('Home', { userData });
+      } else {
+          console.log('No user data found!');
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Login Failed',
+        text2: 'Please check your username and password.',
+        visibilityTime: 3000,
+      });
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,7 +96,7 @@ const LoginScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleGoToDashboard}>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
           </View>
@@ -85,6 +112,7 @@ const LoginScreen = ({ navigation }) => {
           </View>
         </View>
       </LinearGradient>
+      <Toast position="top"/>
     </SafeAreaView>
   )
 }

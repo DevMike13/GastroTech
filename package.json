@@ -19,13 +19,14 @@
     "@react-navigation/stack": "^6.3.29",
     "date-fns": "^2.30.0",
     "expo": "~51.0.28",
-    "expo-status-bar": "~1.12.1",
-    "react": "18.2.0",
-    "react-native": "0.74.5",
     "expo-firebase": "^0.0.0-alpha.0",
+    "expo-linear-gradient": "~13.0.2",
     "expo-notifications": "~0.20.1",
     "expo-permissions": "^14.2.1",
-    "firebase": "^10.4.0",
+    "expo-status-bar": "~1.12.1",
+    "firebase": "^10.14.0",
+    "react": "18.2.0",
+    "react-native": "0.74.5",
     "react-native-calendars": "^1.1300.0",
     "react-native-chart-kit": "^6.12.0",
     "react-native-chart-kit-with-pressable-bar-graph": "^6.11.4",
@@ -38,8 +39,7 @@
     "react-native-screens": "3.31.1",
     "react-native-sound": "^0.11.2",
     "react-native-svg": "^15.3.0",
-    "react-native-toast-message": "^2.1.6",
-    "expo-linear-gradient": "~13.0.2"
+    "react-native-toast-message": "^2.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
