@@ -20,6 +20,8 @@ import AboutScreen from '../screens/About/AboutScreen';
 import PrivacyPolicyScreen from '../screens/About/PrivacyPolicy/PrivacyPolicyScreen';
 import SystemScreen from '../screens/About/System/SystemScreen';
 import AccountScreen from '../screens/Account/AccountScreen';
+import FAQScreen from '../screens/FAQ/FAQScreen';
+import UserReportScreen from '../screens/Reports/User/UserReportScreen';
 
 const AppNavigator = () => {
     
@@ -114,14 +116,20 @@ const AppNavigator = () => {
                                             leadingIcon="chart-line"
                                             rippleColor={COLORS.gray4}
                                             titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
-                                            onPress={() => { closeMenu(); alert('Reports'); }} 
+                                            onPress={() => { 
+                                                closeMenu(); 
+                                                navigation.navigate('UserReports');
+                                            }} 
                                             title="Reports" 
                                         />
                                         <Menu.Item 
                                             leadingIcon="chat-question-outline"
                                             rippleColor={COLORS.gray4}
                                             titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
-                                            onPress={() => { closeMenu(); alert('FAQ'); }} 
+                                            onPress={() => { 
+                                                closeMenu(); 
+                                                navigation.navigate('FAQ');
+                                            }} 
                                             title="FAQ" 
                                         />
                                         <Menu.Item 
@@ -234,6 +242,46 @@ const AppNavigator = () => {
                                     <Ionicons name="arrow-back-outline" size={32} color="white" />
                                     <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
                                         Account
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })}
+                    />
+                    <Stack.Screen 
+                        name="FAQ" 
+                        component={FAQScreen} 
+                        options={({ navigation }) => ({
+                            headerShown: true,
+                            headerTitle: '',
+                            headerShadowVisible: true,
+                            headerStyle: {
+                                backgroundColor: '#11774e'
+                            },
+                            headerLeft: () => (
+                                <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                    <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                    <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                        FAQ
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        })}
+                    />
+                    <Stack.Screen 
+                        name="UserReports" 
+                        component={UserReportScreen} 
+                        options={({ navigation }) => ({
+                            headerShown: true,
+                            headerTitle: '',
+                            headerShadowVisible: true,
+                            headerStyle: {
+                                backgroundColor: '#11774e'
+                            },
+                            headerLeft: () => (
+                                <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                    <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                    <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                        Reports
                                     </Text>
                                 </TouchableOpacity>
                             )
