@@ -1,11 +1,16 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput } from 'react-native'
-import {React, useState} from 'react'
+import {React, useState, useContext} from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+
+import { UserContext } from '../../../UserContext';
 
 import styles from './dashboard.style';
 
 const DashboardScreen = () => {
+
+    const { user } = useContext(UserContext);
+    
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient

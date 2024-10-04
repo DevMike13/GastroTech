@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
@@ -7,6 +7,8 @@ import Toast from 'react-native-toast-message';
 import { auth, firestore } from '../../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+
+import { UserContext } from '../../../UserContext';
 
 import styles from './register.style';
 
@@ -17,6 +19,8 @@ const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [mobileNo, setMobileNo] = useState('');
     const [password, setPassword] = useState('');
+
+    const { setUser } = useContext(UserContext);
 
     const handleGoToLogin = () => {
         navigation.navigate('Login');
@@ -37,6 +41,16 @@ const RegisterScreen = ({ navigation }) => {
                 userType: 'user'
             });
 
+            setUser({
+                uid: user.uid,
+                fullName,
+                restaurantName,
+                address,
+                email,
+                mobileNo,
+                userType: 'user'
+            });
+
             console.log('User registered successfully:', user);
             Toast.show({
                 type: 'success',
@@ -44,6 +58,7 @@ const RegisterScreen = ({ navigation }) => {
                 text2: 'User registered successfully',
                 visibilityTime: 3000,
             });
+
             // Optionally navigate to the home screen or another screen after registration
             // navigation.navigate('Home'); // Uncomment if needed
         } catch (error) {

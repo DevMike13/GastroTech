@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import AppNavigator from './navigation/AppNavigator';
 import { useFonts } from 'expo-font';
 
+import { UserProvider } from './UserContext';
+
 const App = () => {
   const [loaded] = useFonts({
     "DMBold": require('./assets/fonts/DMSans-Bold.ttf'),
@@ -13,7 +15,9 @@ const App = () => {
     return null;
   }
   return (
-    <AppNavigator />
+    <UserProvider>
+      <AppNavigator />
+    </UserProvider>
   );
   
 };

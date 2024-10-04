@@ -1,15 +1,19 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput } from 'react-native'
-import {React, useState} from 'react'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, ActivityIndicator } from 'react-native'
+import {React, useState, useContext} from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 
+import { UserContext } from '../../../UserContext';
 import { auth, firestore } from '../../../firebase';
 
 import styles from './login.style';
 
 const LoginScreen = ({ navigation }) => {
 
+  const { setUser } = useContext(UserContext);
+
+  const [isLoading, setIsLoading] = useState();
   const handleGoToForgot = () => {
     navigation.navigate('Forgot')
   };
@@ -27,6 +31,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
+      setIsLoading(true);
       const userCredential = await auth.signInWithEmailAndPassword(email, password);
       const user = userCredential.user;
 
@@ -34,18 +39,21 @@ const LoginScreen = ({ navigation }) => {
       if (userDoc.exists) {
         const userData = userDoc.data();
         console.log('User data:', userData);
-        // Here you can navigate to the home screen and pass user data if needed
-        // navigation.navigate('Home', { userData });
+        setUser(userData);
+        setIsLoading(false);
       } else {
           console.log('No user data found!');
+          setIsLoading(false);
       }
     } catch (error) {
+      console.log(error);
       Toast.show({
         type: 'error',
         text1: 'Login Failed',
         text2: 'Please check your username and password.',
         visibilityTime: 3000,
       });
+      setIsLoading(false);
     }
   };
 
@@ -97,7 +105,14 @@ const LoginScreen = ({ navigation }) => {
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Login</Text>
+              
+              {
+                isLoading ? (
+                  <ActivityIndicator color="white" size="small" />
+                ) : (
+                <Text style={styles.buttonText}>Login</Text>
+                )
+              }
             </TouchableOpacity>
           </View>
           <View style={styles.signupContainer}>
