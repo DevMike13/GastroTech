@@ -45,6 +45,16 @@ const AccountScreen = ({ navigation }) => {
                     <Ionicons name="settings-outline" size={30} color="black" />
                     <Text style={styles.buttonText}>Account Settings</Text>
                 </TouchableOpacity>
+                {
+                  user?.userType == 'admin' ? (
+                    <TouchableOpacity style={styles.button}>
+                      <Ionicons name="people-outline" size={30} color="black" />
+                      <Text style={styles.buttonText}>Account List</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <></>
+                  )
+                }
                 <TouchableOpacity style={styles.button} onPress={handleLogout}>
                     <Ionicons name="log-out-outline" size={30} color="black" />
                     <Text style={styles.buttonText}>Logout</Text>

@@ -19,6 +19,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCqxFzSoCIhfLFO9ZFyOtVCI1e8tcOP0G4"
+        }
+      },
       "package": "com.hymike.GastroTech"
     },
     "web": {
