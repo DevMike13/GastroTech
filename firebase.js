@@ -27,4 +27,4 @@ const auth = firebase.auth();
 const firestore = firebase.firestore();
 // const database = firebase.database(); // Uncomment if using Realtime Database
 
-export { auth, firestore }; // Export auth and firestore for use in your app
+export { auth, firestore, firebase }; // Export auth and firestore for use in your app

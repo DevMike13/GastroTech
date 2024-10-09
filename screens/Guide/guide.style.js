@@ -5,7 +5,7 @@ import { COLORS, FONT, SIZES, SHADOWS } from "../../assets/theme/theme";
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
     gradientBackground:{
         height: '100%'

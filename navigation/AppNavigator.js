@@ -29,6 +29,7 @@ import FAQScreen from '../screens/FAQ/FAQScreen';
 import UserReportScreen from '../screens/Reports/User/UserReportScreen';
 import LocationsScreen from '../screens/Locations/LocationsScreen';
 import RestaurantsScreen from '../screens/Restaurants/RestaurantsScreen';
+import SprinklerScreen from '../screens/Sprinkler/SprinklerScreen';
 
 const AppNavigator = () => {
     
@@ -176,7 +177,103 @@ const AppNavigator = () => {
                                                         <Menu
                                                             visible={menuVisible}
                                                             onDismiss={closeMenu}
-                                                            statusBarHeight={75}
+                                                            // statusBarHeight={75}
+                                                            statusBarHeight={25}
+                                                            anchor={
+                                                            <TouchableOpacity onPress={openMenu} style={{ paddingHorizontal: 10 }}>
+                                                                <Ionicons name="ellipsis-vertical" size={32} color="white" />
+                                                            </TouchableOpacity>
+                                                            }
+                                                        >
+                                                            <Menu.Item 
+                                                                leadingIcon="access-point-network"
+                                                                rippleColor={COLORS.gray4}
+                                                                onPress={() => { 
+                                                                    closeMenu(); 
+                                                                    navigation.navigate('Device'); 
+                                                                }} 
+                                                                titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
+                                                                title="Device" 
+                                                            />
+                                                            <Menu.Item 
+                                                                leadingIcon="account-outline"
+                                                                rippleColor={COLORS.gray4}
+                                                                titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
+                                                                onPress={() => { 
+                                                                    closeMenu();
+                                                                    navigation.navigate('Account'); 
+                                                                }} 
+                                                                title="Account" 
+                                                            />
+                                                            <Menu.Item 
+                                                                leadingIcon="chart-line"
+                                                                rippleColor={COLORS.gray4}
+                                                                titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
+                                                                onPress={() => { 
+                                                                    closeMenu(); 
+                                                                    navigation.navigate('UserReports');
+                                                                }} 
+                                                                title="Reports" 
+                                                            />
+                                                            <Menu.Item 
+                                                                leadingIcon="chat-question-outline"
+                                                                rippleColor={COLORS.gray4}
+                                                                titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
+                                                                onPress={() => { 
+                                                                    closeMenu(); 
+                                                                    navigation.navigate('FAQ');
+                                                                }} 
+                                                                title="FAQ" 
+                                                            />
+                                                            <Menu.Item 
+                                                                leadingIcon="information-outline"
+                                                                rippleColor={COLORS.gray4}
+                                                                titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
+                                                                onPress={() => { 
+                                                                    closeMenu(); 
+                                                                    navigation.navigate('About');
+                                                                }} 
+                                                                title="About" 
+                                                            />
+                                                        </Menu>
+                                                    </View>
+                                                ),
+                                            })}
+                                        />
+
+                                        <Stack.Screen 
+                                            name="Sprinkler" 
+                                            component={SprinklerScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10 }}>
+                                                        <Image
+                                                            source={require('../assets/images/fire-dash.png')}
+                                                            resizeMode='cover'
+                                                            style={{ width: 50, height: 50 }}
+                                                        />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            GastroTech
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                ),
+                                                headerRight: () => (
+                                                    <View style={{ display: 'flex', flexDirection: 'row' }}>
+                                                        <TouchableOpacity style={{ paddingHorizontal: 10 }} >
+                                                            <Ionicons name="notifications" size={32} color="white" />
+                                                        </TouchableOpacity>
+                                                    
+                                                        <Menu
+                                                            visible={menuVisible}
+                                                            onDismiss={closeMenu}
+                                                            // statusBarHeight={75}
+                                                            statusBarHeight={25}
                                                             anchor={
                                                             <TouchableOpacity onPress={openMenu} style={{ paddingHorizontal: 10 }}>
                                                                 <Ionicons name="ellipsis-vertical" size={32} color="white" />
