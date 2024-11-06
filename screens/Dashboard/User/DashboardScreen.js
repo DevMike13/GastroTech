@@ -234,7 +234,7 @@ const DashboardScreen = ({ navigation }) => {
                             ? 'Normal'
                             : temperature > 30
                             ? 'Very High'
-                            : 'Out of range'
+                            : 'Very High'
                         }
                     </Text>
                </View>

@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 import { auth, firestore } from '../../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
@@ -11,8 +12,15 @@ import { doc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../UserContext';
 
 import styles from './register.style';
+import { COLORS, FONT } from '../../../assets/theme/theme';
 
 const RegisterScreen = ({ navigation }) => {
+    const restaurants = [
+        {key: '1', value: 'Caza Plaza'},
+        {key: '2', value: 'Plaza De Shalom'},
+        {key: '3', value: 'Don Lauro Restaurant'},
+    ];
+    
     const [fullName, setFullName] = useState('');
     const [restaurantName, setRestaurantName] = useState('');
     const [address, setAddress] = useState('');
@@ -97,16 +105,18 @@ const RegisterScreen = ({ navigation }) => {
                                         />
                                     </View>
                                 </View>
-                                <View style={styles.inputContainer}>
-                                    <View style={styles.inputWrapper}>
-                                        <TextInput
-                                            style={styles.inInput}
-                                            placeholder='Restaurant Name'
-                                            value={restaurantName}
-                                            onChangeText={setRestaurantName}
-                                            placeholderTextColor="white"
-                                        />
-                                    </View>
+                                <View style={styles.dropdownInput}>
+                                    <SelectList
+                                        setSelected={(val) => setRestaurantName(val)}
+                                        data={restaurants} 
+                                        search={false}
+                                        save="value"
+                                        placeholder='Ex: Caza Plaza'
+                                        defaultOption={{ key: '1', value: 'Caza Plaza' }}
+                                        fontFamily={FONT.regular}
+                                        inputStyles={{ color: COLORS.white}}
+                                        dropdownTextStyles={{ color: COLORS.white}}
+                                    />
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <View style={styles.inputWrapper}>

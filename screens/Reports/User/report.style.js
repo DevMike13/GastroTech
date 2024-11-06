@@ -27,6 +27,15 @@ const styles = StyleSheet.create({
     reportTitleText:{
         fontFamily: FONT.medium,
         color: COLORS.white
+    },
+    dropdownInput:{
+        width: "100%",
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        borderRadius: SIZES.medium,
+        color: COLORS.white
+    },
+    loadingContainer:{
+        height: 300
     }
 });
 

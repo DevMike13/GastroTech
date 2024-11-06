@@ -1,139 +1,249 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, Dimensions } from 'react-native'
-import {React, useState} from 'react'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, ActivityIndicator } from 'react-native'
+import {React, useState, useContext, useEffect} from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { LineChart } from "react-native-chart-kit";
+import { SelectList } from 'react-native-dropdown-select-list';
 
+
+import { firestore } from '../../../firebase';
 import styles from './report.style';
 
 const screenWidth = Dimensions.get("window").width;
 
-const UserReportScreen = () => {
-    const dataset1 = Array.from({ length: 6 }, () => Math.random() * 100);
-    const dataset2 = Array.from({ length: 6 }, () => Math.random() * 100);
-    const dataset3 = Array.from({ length: 6 }, () => Math.random() * 100);
-  return (
-    <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={['#11774e', '#14b045', '#0c403b']}
-        locations={[0, 0.4, 1]}
-        style={styles.gradientBackground}
-      >
-        <View style={styles.contentContainer}>
-            <Text style={styles.restaurantNameText}>Caza Plaza</Text>
+import { UserContext } from '../../../UserContext';
+import { COLORS, FONT } from '../../../assets/theme/theme';
 
-            <View>
-                <Text style={styles.reportTitleText}>Gas Levels</Text>
-                <LineChart
-                    data={{
-                    labels: ["January", "February", "March", "April", "May", "June"],
-                    datasets: [
-                        {
-                            data: dataset1,
-                            color: (opacity = 1) => `rgba(128, 128, 128, ${opacity})`,
-                            strokeWidth: 2
-                        }
-                    ]
-                    }}
-                    width={(Dimensions.get("window").width - 20)}
-                    height={220}
-                    yAxisInterval={1} 
-                    chartConfig={{
-                    backgroundColor: "#ffffff",
-                    backgroundGradientFrom: "#ffffff",
-                    backgroundGradientTo: "#ffffff",
-                    decimalPlaces: 2,
-                    color: (opacity = 1) => `rgba(169, 169, 169, ${opacity})`, // Gray chart color
-                    labelColor: (opacity = 1) => `rgba(128, 128, 128, ${opacity})`, // Label color gray
-                    propsForDots: {
-                        r: "6",
-                        strokeWidth: "2",
-                        stroke: "#ffa726"
+const UserReportScreen = () => {
+   
+    const [gasData, setGasData] = useState({ labels: [], datasets: [] });
+    const [temperatureData, setTemperatureData] = useState({ labels: [], datasets: [] });
+
+
+    const { user } = useContext(UserContext);
+    const [selectedFilter, setSelectedFilter] = useState('Weekly');
+    const filter = [
+        {key: '1', value: 'Weekly'},
+        {key: '2', value: 'Monthly'},
+        {key: '3', value: 'Yearly'},
+    ];
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setSelectedFilter(selectedFilter);
+    
+                const querySnapshot = await firestore.collection('readings')
+                    .where('restaurant_name', '==', user.restaurantName)
+                    .orderBy('reading_date', 'asc')
+                    .get();
+    
+                const gasLevelsMap = new Map();
+    
+                // Get the current date details
+                const currentDate = new Date();
+                const currentDay = currentDate.getDay();
+               // Start and end of the current week (Sunday to Saturday)
+                const startOfWeek = new Date(currentDate);
+                startOfWeek.setDate(currentDate.getDate() - currentDay);
+                startOfWeek.setHours(0, 0, 0, 0);
+
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                endOfWeek.setHours(23, 59, 59, 999);
+
+                const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // Start of the current month
+                const startOfYear = new Date(currentDate.getFullYear(), 0, 1); // Start of the current year
+    
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const readingDate = new Date(data.reading_date);
+    
+                    let label = '';
+                    let key = '';
+    
+                    if (selectedFilter === 'Weekly' && readingDate >= startOfWeek && readingDate <= endOfWeek) {
+                        const dayOfWeek = readingDate.getDay();
+                        label = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dayOfWeek];
+                        key = `${readingDate.getFullYear()}-${readingDate.getMonth()}-${dayOfWeek}`;
+    
+                    } else if (selectedFilter === 'Monthly' && readingDate >= startOfMonth) {
+                        const month = readingDate.getMonth();
+                        label = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month];
+                        key = `${readingDate.getFullYear()}-${month}`;
+    
+                    } else if (selectedFilter === 'Yearly') {
+                        const year = readingDate.getFullYear();
+                        label = `${year}`;
+                        key = `${year}`;
                     }
-                    }}
-                    bezier
-                    style={{
-                        marginVertical: 8,
-                        borderRadius: 10
-                    }}
-                    renderDotContent={({ x, y, index }) => {
-                        const dataValue = dataset1[index]; // Reference your dataset directly
-                        
-                        return (
-                            <Text
-                                key={`dot-${index}-${dataValue}`}
-                                style={{
-                                    position: 'absolute',
-                                    top: y - 24,
-                                    left: x - 10,
-                                    fontSize: 12,
-                                    color: "#000",
-                                }}
-                            >
-                                {`${dataValue.toFixed(2)} ppm`} {/* Adjust as needed */}
-                            </Text>
-                        );
-                    }}                
-                />
-            </View>
-            
-            <View>
-                <Text style={styles.reportTitleText}>Temperature</Text>
-                <LineChart
-                    data={{
-                    labels: ["January", "February", "March", "April", "May", "June"],
-                    datasets: [
-                        {
-                            data: dataset2,
-                            color: (opacity = 1) => `rgba(0, 150, 255, ${opacity})`,
-                            strokeWidth: 2
+    
+                    if (label && key) {
+                        if (!gasLevelsMap.has(key)) {
+                            gasLevelsMap.set(key, { label, gas_level: data.gas_level, temperature: data.temperature });
+                        } else {
+                            const existingData = gasLevelsMap.get(key);
+                            gasLevelsMap.set(key, {
+                                label: existingData.label,
+                                gas_level: Math.max(existingData.gas_level, data.gas_level),
+                                temperature: Math.max(existingData.temperature, data.temperature),
+                            });
                         }
-                    ]
-                    }}
-                    width={(Dimensions.get("window").width - 20)}
-                    height={250}
-                    yAxisInterval={1} 
-                    chartConfig={{
-                    backgroundColor: "#ffffff",
-                    backgroundGradientFrom: "#ffffff",
-                    backgroundGradientTo: "#ffffff",
-                    decimalPlaces: 2,
-                    color: (opacity = 1) => `rgba(0, 150, 255, ${opacity})`, // Gray chart color
-                    labelColor: (opacity = 1) => `rgba(0, 150, 255, ${opacity})`, // Label color gray
-                    propsForDots: {
-                        r: "6",
-                        strokeWidth: "2",
-                        stroke: "#0096FF"
                     }
-                    }}
-                    bezier
-                    style={{
-                        marginVertical: 8,
-                        borderRadius: 10
-                    }}
-                    renderDotContent={({ x, y, index }) => {
-                        const dataValue = dataset2[index]; // Reference your dataset directly
-                        
-                        return (
-                            <Text
-                                key={`dot-${index}-${dataValue}`}
-                                style={{
-                                    position: 'absolute',
-                                    top: y - 24,
-                                    left: x - 10,
-                                    fontSize: 12,
-                                    color: "#000",
+                });
+    
+                const labels = Array.from(gasLevelsMap.values()).map(entry => entry.label);
+                const gasLevels = Array.from(gasLevelsMap.values()).map(entry => entry.gas_level);
+                const temperatures = Array.from(gasLevelsMap.values()).map(entry => entry.temperature);
+    
+                setGasData({ labels, datasets: [{ data: gasLevels }] });
+                setTemperatureData({ labels, datasets: [{ data: temperatures }] });
+    
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+            }
+        };
+    
+        fetchData();
+    }, [selectedFilter, user.restaurantName]);
+    
+    
+    
+    
+  return (
+    <ScrollView>
+        <SafeAreaView style={styles.container}>
+        <LinearGradient
+            colors={['#11774e', '#14b045', '#0c403b']}
+            locations={[0, 0.4, 1]}
+            style={styles.gradientBackground}
+        >
+            <View style={styles.contentContainer}>
+                <Text style={styles.restaurantNameText}>{ user.restaurantName }</Text>
+                <View style={styles.dropdownInput}>
+                    <SelectList
+                        setSelected={(val) => setSelectedFilter(val)}
+                        data={filter} 
+                        search={false}
+                        save="value"
+                        placeholder='Ex: Weekly'
+                        defaultOption={{ key: '1', value: 'Weekly' }}
+                        fontFamily={FONT.regular}
+                        inputStyles={{ color: COLORS.white}}
+                        dropdownTextStyles={{ color: COLORS.white}}
+                    />
+                </View>
+                <View>
+                    <Text style={styles.reportTitleText}>Gas Levels</Text>
+                    {
+                        gasData.datasets && gasData.datasets.length > 0 ? (
+                            <LineChart
+                                data={gasData}
+                                width={screenWidth - 20}
+                                height={220}
+                                yAxisInterval={1}
+                                chartConfig={{
+                                    backgroundColor: "#ffffff",
+                                    backgroundGradientFrom: "#ffffff",
+                                    backgroundGradientTo: "#ffffff",
+                                    decimalPlaces: 2,
+                                    color: (opacity = 1) => `rgba(169, 169, 169, ${opacity})`,
+                                    labelColor: (opacity = 1) => `rgba(128, 128, 128, ${opacity})`,
+                                    propsForDots: {
+                                        r: "6",
+                                        strokeWidth: "2",
+                                        stroke: "#ffa726"
+                                    }
                                 }}
-                            >
-                                {`${dataValue.toFixed(2)} °C`} {/* Adjust as needed */}
-                            </Text>
-                        );
-                    }}                
-                />  
+                                bezier
+                                style={{
+                                    marginVertical: 8,
+                                    borderRadius: 10
+                                }}
+                                renderDotContent={({ x, y, index }) => {
+                                    const dataValue = gasData.datasets[0].data[index];
+
+                                    return (
+                                        <Text
+                                            key={`dot-${index}-${dataValue}`}
+                                            style={{
+                                                position: 'absolute',
+                                                top: y - 24,
+                                                left: x - 10,
+                                                fontSize: 12,
+                                                color: "#000",
+                                            }}
+                                        >
+                                            {`${dataValue.toFixed(2)} ppm`}
+                                        </Text>
+                                    );
+                                }}
+                            />
+                        ) : (
+                            <View style={styles.loadingContainer}>
+                                <ActivityIndicator size="large" />
+                            </View>
+                        )
+                    }
+                </View> 
+                
+                <View>
+                    <Text style={styles.reportTitleText}>Temperature</Text>
+                    {
+                        temperatureData.datasets && temperatureData.datasets.length > 0 ? (
+                            <LineChart
+                                data={temperatureData}
+                                width={(Dimensions.get("window").width - 20)}
+                                height={250}
+                                yAxisInterval={1} 
+                                chartConfig={{
+                                backgroundColor: "#ffffff",
+                                backgroundGradientFrom: "#ffffff",
+                                backgroundGradientTo: "#ffffff",
+                                decimalPlaces: 2,
+                                color: (opacity = 1) => `rgba(0, 150, 255, ${opacity})`,
+                                labelColor: (opacity = 1) => `rgba(0, 150, 255, ${opacity})`,
+                                propsForDots: {
+                                    r: "6",
+                                    strokeWidth: "2",
+                                    stroke: "#0096FF"
+                                }
+                                }}
+                                bezier
+                                style={{
+                                    marginVertical: 8,
+                                    borderRadius: 10
+                                }}
+                                renderDotContent={({ x, y, index }) => {
+                                    const dataValue = temperatureData.datasets[0].data[index];
+                                    
+                                    return (
+                                        <Text
+                                            key={`dot-${index}-${dataValue}`}
+                                            style={{
+                                                position: 'absolute',
+                                                top: y - 24,
+                                                left: x - 10,
+                                                fontSize: 12,
+                                                color: "#000",
+                                            }}
+                                        >
+                                            {`${dataValue.toFixed(2)} °C`}
+                                        </Text>
+                                    );
+                                }}                
+                            />  
+                        ) : (
+                            <View style={styles.loadingContainer}>
+                                <ActivityIndicator size="large" />
+                            </View>
+                        )
+                    }
+                    
+                </View>
             </View>
-        </View>
-      </LinearGradient>
-    </SafeAreaView>
+        </LinearGradient>
+        </SafeAreaView>
+    </ScrollView>
   )
 }
 

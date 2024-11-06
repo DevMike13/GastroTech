@@ -51,6 +51,13 @@ const styles = StyleSheet.create({
         height: "100%",
         paddingHorizontal: SIZES.medium,
     },
+    dropdownInput:{
+        width: "100%",
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        borderRadius: SIZES.medium,
+        marginTop: SIZES.large,
+        color: COLORS.white
+    },
     buttonContainer:{
         width: '100%',
         display: 'flex',
