@@ -2,6 +2,9 @@ import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput } from 're
 import {React, useState} from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
+
+import { firebase } from '../../../firebase';
 
 import styles from './forgot.style';
 
@@ -11,6 +14,26 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
     const handleGoToLogin = () => {
         navigation.navigate('Login')
+    };
+
+    const handleResetPassword = async () => {
+      try {
+        await firebase.auth().sendPasswordResetEmail(email);
+        Toast.show({
+          type: 'success',
+          text1: 'Password Reset Email Sent',
+          text2: 'Please check your email to reset your password.',
+          visibilityTime: 3000,
+        });
+        navigation.goBack();
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Password Reset Failed',
+          text2: 'An error occurred while sending the reset email.',
+          visibilityTime: 3000,
+        });
+      }
     };
 
   return (
@@ -42,11 +65,14 @@ const ForgotPasswordScreen = ({ navigation }) => {
                   textContentType='emailAddress'
                   placeholderTextColor="white"
                 />
+                <View>
+                  <Ionicons name="at-outline" size={28} color="white" />
+                </View>
               </View>
             </View>
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleGoToLogin}>
+            <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
               <Text style={styles.buttonText}>Reset Password</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonCancel} onPress={handleGoToLogin}>

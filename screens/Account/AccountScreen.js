@@ -26,6 +26,13 @@ const AccountScreen = ({ navigation }) => {
     }
   };
 
+  const handleGoToAccountSettings = () => {
+    navigation.navigate('AccountSettings');
+  }
+  const handleGoToAccountList = () => {
+    navigation.navigate('AccountList');
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
@@ -41,13 +48,13 @@ const AccountScreen = ({ navigation }) => {
             <Text style={styles.usernameText}>Hello, {user?.fullName}!</Text>
             <Text style={styles.userEmailText}>{user?.email}</Text>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={handleGoToAccountSettings}>
                     <Ionicons name="settings-outline" size={30} color="black" />
                     <Text style={styles.buttonText}>Account Settings</Text>
                 </TouchableOpacity>
                 {
                   user?.userType == 'admin' ? (
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={handleGoToAccountList}>
                       <Ionicons name="people-outline" size={30} color="black" />
                       <Text style={styles.buttonText}>Account List</Text>
                     </TouchableOpacity>

@@ -1,5 +1,5 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
-import React, { useState, useContext } from 'react';
+import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, ScrollView, Platform, ActivityIndicator } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
@@ -15,6 +15,14 @@ import styles from './register.style';
 import { COLORS, FONT } from '../../../assets/theme/theme';
 
 const RegisterScreen = ({ navigation }) => {
+
+    const [isLoading, setIsLoading] = useState();
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setIsPasswordVisible(!isPasswordVisible);
+    };
+
     const restaurants = [
         {key: '1', value: 'Caza Plaza'},
         {key: '2', value: 'Plaza De Shalom'},
@@ -22,7 +30,7 @@ const RegisterScreen = ({ navigation }) => {
     ];
     
     const [fullName, setFullName] = useState('');
-    const [restaurantName, setRestaurantName] = useState('');
+    const [restaurantName, setRestaurantName] = useState('Caza Plaza');
     const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
     const [mobileNo, setMobileNo] = useState('');
@@ -33,10 +41,14 @@ const RegisterScreen = ({ navigation }) => {
     const handleGoToLogin = () => {
         navigation.navigate('Login');
     };
+    
+    useEffect(() => {
+        setRestaurantName('Caza Plaza');
+    }, []);
 
     const handleSignUp = async () => {
         try {
-           
+            setIsLoading(true);
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
@@ -66,12 +78,19 @@ const RegisterScreen = ({ navigation }) => {
                 text2: 'User registered successfully',
                 visibilityTime: 3000,
             });
-
+            setIsLoading(false);
             // Optionally navigate to the home screen or another screen after registration
             // navigation.navigate('Home'); // Uncomment if needed
         } catch (error) {
             setError(error.message); // Handle errors
-            console.error('Error during sign up:', error.message);
+            Toast.show({
+                type: 'error',
+                text1: 'Error Registration',
+                text2: error.message,
+                visibilityTime: 3000,
+            });
+            // console.error('Error during sign up:', error.message);
+            setIsLoading(false);
         }
     };
 
@@ -103,6 +122,9 @@ const RegisterScreen = ({ navigation }) => {
                                             onChangeText={setFullName}
                                             placeholderTextColor="white"
                                         />
+                                        <View>
+                                            <Ionicons name="person-outline" size={28} color="white" />
+                                        </View>
                                     </View>
                                 </View>
                                 <View style={styles.dropdownInput}>
@@ -127,6 +149,9 @@ const RegisterScreen = ({ navigation }) => {
                                             onChangeText={setAddress}
                                             placeholderTextColor="white"
                                         />
+                                        <View>
+                                            <Ionicons name="location-outline" size={28} color="white" />
+                                        </View>
                                     </View>
                                 </View>
                                 <View style={styles.inputContainer}>
@@ -140,6 +165,9 @@ const RegisterScreen = ({ navigation }) => {
                                             textContentType='emailAddress'
                                             placeholderTextColor="white"
                                         />
+                                        <View>
+                                            <Ionicons name="at-outline" size={28} color="white" />
+                                        </View>
                                     </View>
                                 </View>
                                 <View style={styles.inputContainer}>
@@ -152,6 +180,9 @@ const RegisterScreen = ({ navigation }) => {
                                             keyboardType="phone-pad"
                                             placeholderTextColor="white"
                                         />
+                                        <View>
+                                            <Ionicons name="call-outline" size={28} color="white" />
+                                        </View>
                                     </View>
                                 </View>
                                 <View style={styles.inputContainer}>
@@ -161,15 +192,24 @@ const RegisterScreen = ({ navigation }) => {
                                             placeholder='Password'
                                             value={password}
                                             onChangeText={setPassword}
-                                            secureTextEntry={true}
+                                            secureTextEntry={!isPasswordVisible}
                                             placeholderTextColor="white"
                                         />
+                                        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
+                                            <Ionicons name={isPasswordVisible ? 'eye-outline' : 'eye-off-outline'} size={28} color="white" />
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
                             <View style={styles.buttonContainer}>
                                 <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                                    <Text style={styles.buttonText}>Sign Up</Text>
+                                    {
+                                        isLoading ? (
+                                            <ActivityIndicator color="white" size="small" />
+                                        ) : (
+                                            <Text style={styles.buttonText}>Sign Up</Text>
+                                        )
+                                    }
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.signupContainer}>

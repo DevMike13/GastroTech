@@ -53,6 +53,20 @@ const styles = StyleSheet.create({
         fontSize: SIZES.medium,
         color: COLORS.white
     },
+    statusText:{
+        backgroundColor: 'red',
+        color: COLORS.white,
+        paddingVertical: 2,
+        paddingHorizontal: SIZES.xSmall,
+        borderRadius: SIZES.medium
+    },
+    statusNormalText:{
+        backgroundColor: 'lightgreen',
+        color: COLORS.white,
+        paddingVertical: 2,
+        paddingHorizontal: SIZES.xSmall,
+        borderRadius: SIZES.medium
+    }
 });
 
 export default styles;

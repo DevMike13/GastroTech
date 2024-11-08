@@ -30,6 +30,9 @@ import UserReportScreen from '../screens/Reports/User/UserReportScreen';
 import LocationsScreen from '../screens/Locations/LocationsScreen';
 import RestaurantsScreen from '../screens/Restaurants/RestaurantsScreen';
 import SprinklerScreen from '../screens/Sprinkler/SprinklerScreen';
+import HistoryScreen from '../screens/History/HistoryScreen';
+import AccountSettingScreen from '../screens/AccountSettings/AccountSettingScreen';
+import AccountListScreen from '../screens/AccountList/AccountListScreen';
 
 const AppNavigator = () => {
     
@@ -138,6 +141,48 @@ const AppNavigator = () => {
                                                         <Ionicons name="arrow-back-outline" size={32} color="white" />
                                                         <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
                                                             Restaurants
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        />
+
+                                        <Stack.Screen 
+                                            name="History" 
+                                            component={HistoryScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                        <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            History
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        />
+
+                                        <Stack.Screen 
+                                            name="AccountList" 
+                                            component={AccountListScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                        <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            Accounts
                                                         </Text>
                                                     </TouchableOpacity>
                                                 )
@@ -473,6 +518,26 @@ const AppNavigator = () => {
                                                 <Ionicons name="arrow-back-outline" size={32} color="white" />
                                                 <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
                                                     Reports
+                                                </Text>
+                                            </TouchableOpacity>
+                                        )
+                                    })}
+                                />
+                                <Stack.Screen 
+                                    name="AccountSettings" 
+                                    component={AccountSettingScreen} 
+                                    options={({ navigation }) => ({
+                                        headerShown: true,
+                                        headerTitle: '',
+                                        headerShadowVisible: true,
+                                        headerStyle: {
+                                            backgroundColor: '#11774e'
+                                        },
+                                        headerLeft: () => (
+                                            <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                    Account Settings
                                                 </Text>
                                             </TouchableOpacity>
                                         )

@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { DataTable } from 'react-native-paper';
 
 import { UserContext } from '../../UserContext';
-import { firestore } from '../../firebase';
+import { firestore, firebase } from '../../firebase';
 
 import styles from './restaurant.style';
 
@@ -14,6 +14,7 @@ const RestaurantsScreen = ({ navigation }) => {
     const { user } = useContext(UserContext);
     const [restaurants, setRestaurants] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [status, setStatus] = useState({});
 
     useEffect(() => {
         const fetchRestaurants = async () => {
@@ -24,18 +25,40 @@ const RestaurantsScreen = ({ navigation }) => {
                 return {
                     id: doc.id,
                     restaurant_name: data.restaurant_name,
-                    address: data.address
+                    address: data.address,
+                    rtdb: data.rtdb
                 };
-            });
+            }); 
                 setRestaurants(restaurantData);
-                // console.log(restaurantData);
+                listenForFireStatus(restaurantData);
 
             } catch (error) {
                 console.error('Error fetching marker data:', error);
             }
         };
 
+        const listenForFireStatus = (restaurantData) => {
+            restaurantData.forEach(restaurant => {
+                const fireRef = firebase.database().ref(`${restaurant.rtdb}/Fire`);
+
+                fireRef.on('value', (snapshot) => {
+                    const fireStatus = snapshot.val();
+                    setStatus(prevStatus => ({
+                        ...prevStatus,
+                        [restaurant.rtdb]: fireStatus || 'Loading...',
+                    }));
+                });
+            });
+        };
+
+
         fetchRestaurants(); 
+        return () => {
+            restaurants.forEach(restaurant => {
+                const fireRef = firebase.database().ref(`${restaurant.rtdb}/Fire`);
+                fireRef.off('value');
+            });
+        };
     }, []);
 
     const filteredRestaurants = restaurants.filter(restaurant => {
@@ -69,7 +92,7 @@ const RestaurantsScreen = ({ navigation }) => {
                             onChangeText={setSearchQuery}
                             style={styles.searchInput}
                         />
-                    </View>
+                    </View> 
                 </View>
 
                 <DataTable style={{backgroundColor:'white'}}>
@@ -80,12 +103,28 @@ const RestaurantsScreen = ({ navigation }) => {
                         <DataTable.Title>
                             <Text style={styles.tableTitleText}>Address</Text>
                         </DataTable.Title>
+                        <DataTable.Title>
+                            <Text style={styles.tableTitleText}>Status</Text>
+                        </DataTable.Title>
                     </DataTable.Header>
 
                     {filteredRestaurants.map(restaurantData => (
                         <DataTable.Row key={restaurantData.id}>
                             <DataTable.Cell>{restaurantData.restaurant_name}</DataTable.Cell>
                             <DataTable.Cell>{restaurantData.address}</DataTable.Cell>
+                            <DataTable.Cell>
+                                {status[restaurantData.rtdb] === 'Fire Detected' 
+                                ? (
+                                    <Text style={styles.statusText}>
+                                        Fire Detected
+                                    </Text>
+                                )
+                                : (
+                                    <Text style={styles.statusNormalText}>
+                                        Normal
+                                    </Text>
+                                )}
+                            </DataTable.Cell>
                         </DataTable.Row>
                     ))}
                 </DataTable>

@@ -19,6 +19,7 @@ const DashboardScreen = ({ navigation }) => {
     const handleGoToSprinkler = () => {
         navigation.navigate('Sprinkler');
     }
+    console.log(user);
     useEffect(() => {
 
         let temperatureRef, smokeRef, gasRef, fireRef;

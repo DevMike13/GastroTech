@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
     },
     inputWrapper: {
         flex: 1,
+        display: 'flex',
+        flexDirection: 'row',
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
         justifyContent: "center",
         alignItems: "center",
@@ -40,9 +42,9 @@ const styles = StyleSheet.create({
     },
     inInput: {
         fontFamily: FONT.regular,
-        width: "100%",
+        width: "85%",
         height: "100%",
-        paddingHorizontal: SIZES.medium,
+        paddingHorizontal: SIZES.medium
     },
     forgotContainer:{
         width: '100%',

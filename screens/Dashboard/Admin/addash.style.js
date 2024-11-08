@@ -10,11 +10,23 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%'
     },
+    navigationCount:{
+        backgroundColor : 'red',
+        paddingVertical: 2,
+        paddingHorizontal: SIZES.xxSmall,
+        borderRadius: SIZES.xLarge,
+        color: COLORS.white,
+        fontSize: SIZES.medium,
+        position: 'absolute',
+        right: 0,
+        top: -10
+    },
     navigationButtonContainer:{
         width: '100%',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        marginTop: SIZES.xxxLarge,
+        paddingTop: SIZES.xxxLarge,
         gap: SIZES.xLarge,
         paddingHorizontal: SIZES.xxLarge
     },
@@ -26,6 +38,7 @@ const styles = StyleSheet.create({
     },
     navigationButton:{
         width: '45%',
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-evenly',
@@ -53,12 +66,12 @@ const styles = StyleSheet.create({
     },
     modelContainer:{
         width: '100%',
-        position: 'absolute',
-        bottom: 0
+        height: 'auto',
+        marginTop: 'auto'
     },
     modelImage:{
         width: 200,
-        height: 200
+        height: 180,
     }
 });
 

@@ -12,6 +12,7 @@ import styles from './login.style';
 const LoginScreen = ({ navigation }) => {
 
   const { setUser } = useContext(UserContext);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const [isLoading, setIsLoading] = useState();
   const handleGoToForgot = () => {
@@ -20,6 +21,10 @@ const LoginScreen = ({ navigation }) => {
 
   const handleGoToRegistration = () => {
     navigation.navigate('Register')
+  };
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
   };
 
   const handleGoToDashboard = () => {
@@ -43,6 +48,12 @@ const LoginScreen = ({ navigation }) => {
         setIsLoading(false);
       } else {
           console.log('No user data found!');
+          Toast.show({
+            type: 'error',
+            text1: 'Login Failed',
+            text2: 'Please check your username and password.',
+            visibilityTime: 3000,
+          });
           setIsLoading(false);
       }
     } catch (error) {
@@ -81,6 +92,9 @@ const LoginScreen = ({ navigation }) => {
                   textContentType='emailAddress'
                   placeholderTextColor="white"
                 />
+                <View>
+                  <Ionicons name="person-outline" size={28} color="white" />
+                </View>
               </View>
             </View>
             <View style={styles.inputContainer}>
@@ -90,9 +104,12 @@ const LoginScreen = ({ navigation }) => {
                   placeholder='Password'
                   value={password}
                   onChangeText={setPassword}
-                  secureTextEntry={true}
+                  secureTextEntry={!isPasswordVisible}
                   placeholderTextColor="white"
                 />
+                <TouchableOpacity onPress={togglePasswordVisibility} style={styles.iconContainer}>
+                  <Ionicons name={isPasswordVisible ? 'eye-outline' : 'eye-off-outline'} size={28} color="white" />
+                </TouchableOpacity>
               </View>
             </View>
           </View>
