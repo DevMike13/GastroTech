@@ -1,5 +1,6 @@
 import { View, Text, SafeAreaView, Image, TouchableOpacity } from 'react-native'
 import React, { useState, useContext } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -17,6 +18,7 @@ const AccountScreen = ({ navigation }) => {
     try {
       await auth.signOut(); 
       setUser(null);
+      await AsyncStorage.removeItem('user');
       navigation.reset({
         index: 0,
         routes: [{ name: 'Login' }],

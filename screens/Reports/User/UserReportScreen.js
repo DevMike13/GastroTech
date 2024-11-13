@@ -1,7 +1,8 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, ActivityIndicator, Button } from 'react-native'
 import {React, useState, useContext, useEffect} from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { LineChart } from "react-native-chart-kit";
 import { SelectList } from 'react-native-dropdown-select-list';
 
@@ -18,7 +19,8 @@ const UserReportScreen = () => {
    
     const [gasData, setGasData] = useState({ labels: [], datasets: [] });
     const [temperatureData, setTemperatureData] = useState({ labels: [], datasets: [] });
-
+    const [startDate, setStartDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     const { user } = useContext(UserContext);
     const [selectedFilter, setSelectedFilter] = useState('Weekly');
@@ -27,85 +29,84 @@ const UserReportScreen = () => {
         {key: '2', value: 'Monthly'},
         {key: '3', value: 'Yearly'},
     ];
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setSelectedFilter(selectedFilter);
-    
-                const querySnapshot = await firestore.collection('readings')
-                    .where('restaurant_name', '==', user.restaurantName)
-                    .orderBy('reading_date', 'asc')
-                    .get();
-    
-                const gasLevelsMap = new Map();
-    
-                // Get the current date details
-                const currentDate = new Date();
-                const currentDay = currentDate.getDay();
-               // Start and end of the current week (Sunday to Saturday)
-                const startOfWeek = new Date(currentDate);
-                startOfWeek.setDate(currentDate.getDate() - currentDay);
-                startOfWeek.setHours(0, 0, 0, 0);
+    const onDateChange = (event, selectedDate) => {
+        setShowDatePicker(false);
+        if (selectedDate) {
+          setStartDate(selectedDate); // Update start date
+        }
+    };
+    const fetchData = async () => {
+        try {
+          // Set up your start date for the filter based on selected date
+          const filterStartDate = startDate; // Use the startDate state as the filter
+          filterStartDate.setHours(0, 0, 0, 0);
 
-                const endOfWeek = new Date(startOfWeek);
-                endOfWeek.setDate(startOfWeek.getDate() + 6);
-                endOfWeek.setHours(23, 59, 59, 999);
+          const currentDate = new Date();
+            currentDate.setHours(23, 59, 59, 999);
 
-                const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // Start of the current month
-                const startOfYear = new Date(currentDate.getFullYear(), 0, 1); // Start of the current year
+          // Fetch data from Firestore
+          const querySnapshot = await firestore.collection('readings')
+            .where('restaurant_name', '==', user.restaurantName)
+            .orderBy('reading_date', 'asc')
+            .get();
     
-                querySnapshot.forEach(doc => {
-                    const data = doc.data();
-                    const readingDate = new Date(data.reading_date);
+          const gasLevelsMap = new Map();
     
-                    let label = '';
-                    let key = '';
+          querySnapshot.forEach(doc => {
+            const data = doc.data();
+            const readingDate = new Date(data.reading_date);
+            readingDate.setHours(0, 0, 0, 0);
+
+            let label = '';
+            let key = '';
+           
+            if (selectedFilter === 'Weekly' && readingDate >= filterStartDate && readingDate <= currentDate && readingDate.getMonth() == filterStartDate.getMonth()) {
+              const dayOfWeek = readingDate.getDay();
+             
+              label = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dayOfWeek];
+              key = `${readingDate.getFullYear()}-${readingDate.getMonth()}-${dayOfWeek}`;
     
-                    if (selectedFilter === 'Weekly' && readingDate >= startOfWeek && readingDate <= endOfWeek) {
-                        const dayOfWeek = readingDate.getDay();
-                        label = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dayOfWeek];
-                        key = `${readingDate.getFullYear()}-${readingDate.getMonth()}-${dayOfWeek}`;
+            } else if (selectedFilter === 'Monthly' && readingDate >= filterStartDate) {
+              const month = readingDate.getMonth();
+              label = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month];
+              key = `${readingDate.getFullYear()}-${month}`;
     
-                    } else if (selectedFilter === 'Monthly' && readingDate >= startOfMonth) {
-                        const month = readingDate.getMonth();
-                        label = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][month];
-                        key = `${readingDate.getFullYear()}-${month}`;
-    
-                    } else if (selectedFilter === 'Yearly') {
-                        const year = readingDate.getFullYear();
-                        label = `${year}`;
-                        key = `${year}`;
-                    }
-    
-                    if (label && key) {
-                        if (!gasLevelsMap.has(key)) {
-                            gasLevelsMap.set(key, { label, gas_level: data.gas_level, temperature: data.temperature });
-                        } else {
-                            const existingData = gasLevelsMap.get(key);
-                            gasLevelsMap.set(key, {
-                                label: existingData.label,
-                                gas_level: Math.max(existingData.gas_level, data.gas_level),
-                                temperature: Math.max(existingData.temperature, data.temperature),
-                            });
-                        }
-                    }
-                });
-    
-                const labels = Array.from(gasLevelsMap.values()).map(entry => entry.label);
-                const gasLevels = Array.from(gasLevelsMap.values()).map(entry => entry.gas_level);
-                const temperatures = Array.from(gasLevelsMap.values()).map(entry => entry.temperature);
-    
-                setGasData({ labels, datasets: [{ data: gasLevels }] });
-                setTemperatureData({ labels, datasets: [{ data: temperatures }] });
-    
-            } catch (error) {
-                console.error("Error fetching data: ", error);
+            } else if (selectedFilter === 'Yearly' && readingDate >= filterStartDate) {
+              const year = readingDate.getFullYear();
+              label = `${year}`;
+              key = `${year}`;
             }
-        };
     
+            if (label && key) {
+              if (!gasLevelsMap.has(key)) {
+                gasLevelsMap.set(key, { label, gas_level: data.gas_level, temperature: data.temperature });
+              } else {
+                const existingData = gasLevelsMap.get(key);
+                gasLevelsMap.set(key, {
+                  label: existingData.label,
+                  gas_level: Math.max(existingData.gas_level, data.gas_level),
+                  temperature: Math.max(existingData.temperature, data.temperature),
+                });
+              }
+            }
+          });
+    
+          const labels = Array.from(gasLevelsMap.values()).map(entry => entry.label);
+          const gasLevels = Array.from(gasLevelsMap.values()).map(entry => entry.gas_level);
+          const temperatures = Array.from(gasLevelsMap.values()).map(entry => entry.temperature);
+          
+          setGasData({ labels, datasets: [{ data: gasLevels }] });
+          setTemperatureData({ labels, datasets: [{ data: temperatures }] });
+    
+        } catch (error) {
+          console.error("Error fetching data: ", error);
+        }
+      };
+    
+      useEffect(() => {
         fetchData();
-    }, [selectedFilter, user.restaurantName]);
-    
+        setSelectedFilter('Weekly');
+      }, [selectedFilter, startDate]);
     
     
     
@@ -119,6 +120,25 @@ const UserReportScreen = () => {
         >
             <View style={styles.contentContainer}>
                 <Text style={styles.restaurantNameText}>{ user.restaurantName }</Text>
+                <View style={styles.calendarContainer}>
+                    <Button title="Select Start Date" onPress={() => setShowDatePicker(true)} />
+                    <Text style={styles.dateText}>
+                        {startDate.toLocaleDateString('en-US', {
+                            weekday: 'short',
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                        }).replace(',', ' -')}
+                    </Text>
+                </View>
+                {showDatePicker && (
+                    <DateTimePicker
+                    value={startDate}
+                    mode="date"
+                    display="default"
+                    onChange={onDateChange}
+                    />
+                )}
                 <View style={styles.dropdownInput}>
                     <SelectList
                         setSelected={(val) => setSelectedFilter(val)}

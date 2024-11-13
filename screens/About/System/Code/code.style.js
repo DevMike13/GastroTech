@@ -16,6 +16,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         paddingHorizontal: SIZES.large
+    },
+    codeText:{
+        fontFamily: FONT.regular,
+        fontSize: SIZES.small
     }
 });
 

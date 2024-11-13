@@ -36,6 +36,17 @@ const styles = StyleSheet.create({
     },
     loadingContainer:{
         height: 300
+    },
+    calendarContainer:{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        gap: SIZES.medium
+    },
+    dateText:{
+        fontFamily: FONT.bold,
+        color: COLORS.lightWhite
     }
 });
 

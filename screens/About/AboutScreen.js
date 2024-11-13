@@ -1,5 +1,6 @@
-import { View, Text, SafeAreaView, Image, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, Image, TouchableOpacity, Linking } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
+import Toast from 'react-native-toast-message';
 
 import styles from './about.style';
 
@@ -12,6 +13,34 @@ const AboutScreen = ({ navigation }) => {
     const handleGoToSystem = () => {
         navigation.navigate('System')
     }
+
+    const handleEmailPress = () => {
+        Linking.openURL('mailto:firealert298@gmail.com?subject=Support%20Request&body=Hello%20GastroTech%20Support,');
+    }
+
+    const handlePhonePress = () => {
+        Linking.openURL('tel:+639707612396');
+    }
+
+    const handleFacebookPress = async () => {
+        const facebookUrl = 'fb:/profile.php?id=61568296270873'; // Opens the Facebook app if installed
+        const webUrl = 'https://www.facebook.com/profile.php?id=61568296270873'; // Fallback to browser if app is not available
+
+        try {
+            const supported = await Linking.canOpenURL(facebookUrl);
+            if (supported) {
+                await Linking.openURL(facebookUrl);
+            } else {
+                await Linking.openURL(webUrl);
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'Unable to open Facebook page.',
+            });
+        }
+    };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -39,7 +68,7 @@ const AboutScreen = ({ navigation }) => {
             <View style={styles.socialsContainer}>
                 <Text style={styles.titleText}>Contact Us</Text>
                 <View style={styles.socialButtonContainer}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleFacebookPress}>
                         <Image
                             source={require('../../assets/images/facebook.png')}
                             resizeMode='contain'
@@ -54,15 +83,15 @@ const AboutScreen = ({ navigation }) => {
                         />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.socialButtonContainer}>
-                    <TouchableOpacity>
+                <View style={styles.socialButtonContainer} >
+                    <TouchableOpacity onPress={handlePhonePress}>
                         <Image
                             source={require('../../assets/images/call.png')}
                             resizeMode='contain'
                             style={styles.socialImage}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleEmailPress}>
                         <Image
                             source={require('../../assets/images/gmail.png')}
                             resizeMode='contain'
@@ -72,6 +101,7 @@ const AboutScreen = ({ navigation }) => {
                 </View>
             </View>
         </View>
+        <Toast position="top" />
     </SafeAreaView>
   )
 }

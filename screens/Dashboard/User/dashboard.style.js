@@ -12,9 +12,10 @@ const styles = StyleSheet.create({
     },
     navigationButtonContainer:{
         width: '100%',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        marginTop: SIZES.xxxLarge,
+        paddingTop: SIZES.xxxLarge,
         gap: SIZES.medium,
         paddingHorizontal: SIZES.xxLarge
     },
@@ -50,12 +51,12 @@ const styles = StyleSheet.create({
     },
     modelContainer:{
         width: '100%',
-        position: 'absolute',
-        bottom: 0
+        height: 'auto',
+        marginTop: 'auto'
     },
     modelImage:{
         width: 200,
-        height: 200
+        height: 180,
     },
     fireDetectionContainer:{
         width: 'auto',

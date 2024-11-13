@@ -16,7 +16,12 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         paddingHorizontal: SIZES.large
-    }
+    },
+    tableTitleText:{
+        color: COLORS.white,
+        fontFamily: FONT.bold,
+        fontSize: SIZES.medium
+    },
 });
 
 export default styles;

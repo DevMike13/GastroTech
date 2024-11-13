@@ -61,6 +61,16 @@ const RegisterScreen = ({ navigation }) => {
                 userType: 'user'
             });
 
+            await AsyncStorage.setItem('user', JSON.stringify({
+                uid: user.uid,
+                fullName,
+                restaurantName,
+                address,
+                email,
+                mobileNo,
+                userType: 'user'
+            }));
+
             setUser({
                 uid: user.uid,
                 fullName,
@@ -82,7 +92,7 @@ const RegisterScreen = ({ navigation }) => {
             // Optionally navigate to the home screen or another screen after registration
             // navigation.navigate('Home'); // Uncomment if needed
         } catch (error) {
-            setError(error.message); // Handle errors
+            
             Toast.show({
                 type: 'error',
                 text1: 'Error Registration',

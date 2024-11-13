@@ -1,6 +1,7 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, ActivityIndicator } from 'react-native'
-import {React, useState, useContext} from 'react'
+import {React, useState, useContext, useEffect} from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 
@@ -45,6 +46,8 @@ const LoginScreen = ({ navigation }) => {
         const userData = userDoc.data();
         console.log('User data:', userData);
         setUser(userData);
+        await AsyncStorage.setItem('user', JSON.stringify({ uid: user.uid, email: user.email, ...userData }));
+
         setIsLoading(false);
       } else {
           console.log('No user data found!');
@@ -67,6 +70,7 @@ const LoginScreen = ({ navigation }) => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <SafeAreaView style={styles.container}>

@@ -2,6 +2,7 @@ import { View, Text, SafeAreaView, Image, TouchableOpacity, ActivityIndicator } 
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState, useContext, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons';
+import { Video } from 'expo-av';
 
 import { firebase } from '../../firebase';
 import { UserContext } from '../../UserContext';
@@ -105,11 +106,31 @@ const SprinklerScreen = ({ navigation }) => {
                     </View>
                 ) : countdown === 0 && sprinkler === "ON" || sprinkler === "OFF" ? (
                     <View style={styles.sprinklerContentContainer}>
-                        <Image
-                            source={require('../../assets/images/sprinkler.png')}
-                            resizeMode='contain'
-                            style={styles.sprinklerImage}
-                        />
+                        {
+                            sprinkler === "ON" ? (
+                                <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
+                                    <Video
+                                        source={require('../../assets/images/sprinkler.mp4')}
+                                        style={{ width: 100, height: 100, marginBottom: -90, zIndex: 100}}
+                                        isLooping={true}
+                                        resizeMode="contain"
+                                        shouldPlay={true}
+                                    />
+                                    <Image
+                                        source={require('../../assets/images/sprinkler.png')}
+                                        resizeMode='contain'
+                                        style={{ width: 500, height: 280 }}
+                                    />
+                                </View>
+                            ) : (
+                                <Image
+                                    source={require('../../assets/images/sprinkler.png')}
+                                    resizeMode='contain'
+                                    style={styles.sprinklerImage}
+                                />
+                            )
+                        }
+                        
                         {
                             loading ? (
                                 <ActivityIndicator size="small" color="#fffffff" />

@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, ImageBackground, Image } from 'react-native'
 import React, { useEffect, useState, useRef, useContext }from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -37,6 +38,7 @@ import AccountListScreen from '../screens/AccountList/AccountListScreen';
 const AppNavigator = () => {
     
     const [menuVisible, setMenuVisible] = useState(false);
+    const [menuVisibleSprinkler, setMenuVisibleSprinkler] = useState(false);
     const { setUser } = useContext(UserContext);
     const [initializing, setInitializing] = useState(true);
     const [userRole, setUserRole] = useState(null);
@@ -44,40 +46,82 @@ const AppNavigator = () => {
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
 
+    const openMenuSprinkler = () => setMenuVisibleSprinkler(true);
+    const closeMenuSprinkler = () => setMenuVisibleSprinkler(false);
+
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                const userRef = doc(firestore, 'users', user.uid);
-                const userDoc = await getDoc(userRef);
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    setUser({
-                        uid: user.uid,
-                        email: user.email,
-                        ...userData
-                    });
-                    setUserRole(userData.userType);
-                }
-                
+        const checkStoredUser = async () => {
+          try {
+            const storedUser = await AsyncStorage.getItem('user');
+            if (storedUser) {
+              const parsedUser = JSON.parse(storedUser);
+              setUser(parsedUser);
+              setUserRole(parsedUser.userType);
+              setInitializing(false);
             } else {
+              setInitializing(false);
+            }
+          } catch (error) {
+            console.error('Error fetching stored user:', error);
+            setInitializing(false);
+          }
+        };
+    
+        checkStoredUser(); 
+    
+        const unsubscribe = auth.onAuthStateChanged(async (user) => {
+          if (user) {
+            try {
+              const userRef = doc(firestore, 'users', user.uid);
+              const userDoc = await getDoc(userRef);
+    
+              if (userDoc.exists()) {
+                const userData = userDoc.data();
+    
+                await AsyncStorage.setItem('user', JSON.stringify({
+                  uid: user.uid,
+                  email: user.email,
+                  ...userData,
+                })); 
+    
+                setUser({
+                  uid: user.uid,
+                  email: user.email,
+                  ...userData,
+                });
+    
+                setUserRole(userData.userType);
+              } else {
+                console.log('No user data found in Firestore');
                 setUser(null);
                 setUserRole(null);
+              }
+            } catch (error) {
+              console.error('Error fetching user data:', error);
+              setUser(null);
+              setUserRole(null);
             }
-            setInitializing(false);
+          } else {
+            setUser(null);
+            setUserRole(null);
+          }
+    
+          setInitializing(false);
         });
+    
         return () => unsubscribe();
-    }, []);
-
-    if (initializing) {
+      }, []);
+    
+      if (initializing) {
         return <Text>Loading...</Text>;
-    }
+      }
 
     return (
         <Provider>
             <NavigationContainer>
                 <Stack.Navigator>
                     {
-                        auth.currentUser ? (
+                        auth.currentUser || userRole ? (
 
                             <>
                                 {userRole === 'admin' ? (
@@ -315,12 +359,12 @@ const AppNavigator = () => {
                                                         </TouchableOpacity>
                                                     
                                                         <Menu
-                                                            visible={menuVisible}
-                                                            onDismiss={closeMenu}
+                                                            visible={menuVisibleSprinkler}
+                                                            onDismiss={closeMenuSprinkler}
                                                             // statusBarHeight={75}
                                                             statusBarHeight={25}
                                                             anchor={
-                                                            <TouchableOpacity onPress={openMenu} style={{ paddingHorizontal: 10 }}>
+                                                            <TouchableOpacity onPress={openMenuSprinkler} style={{ paddingHorizontal: 10 }}>
                                                                 <Ionicons name="ellipsis-vertical" size={32} color="white" />
                                                             </TouchableOpacity>
                                                             }
@@ -329,7 +373,7 @@ const AppNavigator = () => {
                                                                 leadingIcon="access-point-network"
                                                                 rippleColor={COLORS.gray4}
                                                                 onPress={() => { 
-                                                                    closeMenu(); 
+                                                                    closeMenuSprinkler(); 
                                                                     navigation.navigate('Device'); 
                                                                 }} 
                                                                 titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
@@ -340,7 +384,7 @@ const AppNavigator = () => {
                                                                 rippleColor={COLORS.gray4}
                                                                 titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
                                                                 onPress={() => { 
-                                                                    closeMenu();
+                                                                    closeMenuSprinkler();
                                                                     navigation.navigate('Account'); 
                                                                 }} 
                                                                 title="Account" 
@@ -350,7 +394,7 @@ const AppNavigator = () => {
                                                                 rippleColor={COLORS.gray4}
                                                                 titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
                                                                 onPress={() => { 
-                                                                    closeMenu(); 
+                                                                    closeMenuSprinkler(); 
                                                                     navigation.navigate('UserReports');
                                                                 }} 
                                                                 title="Reports" 
@@ -360,7 +404,7 @@ const AppNavigator = () => {
                                                                 rippleColor={COLORS.gray4}
                                                                 titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
                                                                 onPress={() => { 
-                                                                    closeMenu(); 
+                                                                    closeMenuSprinkler(); 
                                                                     navigation.navigate('FAQ');
                                                                 }} 
                                                                 title="FAQ" 
@@ -370,7 +414,7 @@ const AppNavigator = () => {
                                                                 rippleColor={COLORS.gray4}
                                                                 titleStyle={{ fontFamily: FONT.medium, fontSize: SIZES.medium }}
                                                                 onPress={() => { 
-                                                                    closeMenu(); 
+                                                                    closeMenuSprinkler(); 
                                                                     navigation.navigate('About');
                                                                 }} 
                                                                 title="About" 

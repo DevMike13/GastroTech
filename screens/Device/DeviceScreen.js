@@ -19,11 +19,11 @@ const DeviceScreen = ({ navigation }) => {
                 <Text style={styles.bulletText}>3. If it's not connecting, please check wifi/data connections.</Text>
                 <Text style={styles.bulletText}>4. If it's still the same, contact us.</Text>
             </View>
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button}>
                     <Text style={styles.buttonText}>Connect</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
         </View>
     </SafeAreaView>
   )
