@@ -110,7 +110,7 @@ const SprinklerScreen = ({ navigation }) => {
                             sprinkler === "ON" ? (
                                 <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
                                     <Image
-                                        source={require('../../assets/images/sprinkler.gif')}
+                                        source={require('../../assets/images/sprinkler-on.gif')}
                                         resizeMode='contain'
                                         style={{ width: 140, height: 100, marginBottom: -103, zIndex: 100, marginRight: -10}}
                                     />
