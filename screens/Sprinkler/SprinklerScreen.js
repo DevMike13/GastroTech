@@ -109,12 +109,10 @@ const SprinklerScreen = ({ navigation }) => {
                         {
                             sprinkler === "ON" ? (
                                 <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
-                                    <Video
-                                        source={require('../../assets/images/sprinkler.mp4')}
-                                        style={{ width: 100, height: 100, marginBottom: -90, zIndex: 100}}
-                                        isLooping={true}
-                                        resizeMode="contain"
-                                        shouldPlay={true}
+                                    <Image
+                                        source={require('../../assets/images/sprinkler.gif')}
+                                        resizeMode='contain'
+                                        style={{ width: 140, height: 100, marginBottom: -103, zIndex: 100, marginRight: -10}}
                                     />
                                     <Image
                                         source={require('../../assets/images/sprinkler.png')}

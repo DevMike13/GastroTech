@@ -48,6 +48,10 @@ const AdminDashboardScreen = ({ navigation }) => {
         navigation.navigate('About');
     }
 
+    const handleGoToReports = () => {
+        navigation.navigate('AdminReports');
+    }
+
     const [fireDetectedCount, setFireDetectedCount] = useState(0);
     const [newStatusCount, setNewStatusCount] = useState(0);
     const [statuses, setStatuses] = useState({
@@ -66,7 +70,7 @@ const AdminDashboardScreen = ({ navigation }) => {
         const listenForStatusChanges = () => {
             statusRefs.forEach(({ name, ref }) => {
                 ref.on('value', (snapshot) => {
-                    const statusValue = snapshot.val() === 'Fire Detected' ? 'Fire Detected' : 'No Detection';
+                    const statusValue = snapshot.val() === 'Fire Detected!' ? 'Fire Detected!' : 'No Detection';
                     setStatuses((prevStatuses) => ({
                         ...prevStatuses,
                         [name]: statusValue,
@@ -83,7 +87,7 @@ const AdminDashboardScreen = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
-        const count = Object.values(statuses).filter(status => status === 'Fire Detected').length;
+        const count = Object.values(statuses).filter(status => status === 'Fire Detected!').length;
         setFireDetectedCount(count);
     }, [statuses]);
 
@@ -165,7 +169,7 @@ const AdminDashboardScreen = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.navigationButton}>
+                <TouchableOpacity style={styles.navigationButton} onPress={handleGoToReports}>
                     <Image
                         source={require('../../../assets/images/manual-book.png')}
                         resizeMode='contain'

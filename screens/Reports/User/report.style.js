@@ -47,6 +47,11 @@ const styles = StyleSheet.create({
     dateText:{
         fontFamily: FONT.bold,
         color: COLORS.lightWhite
+    },
+    chartContainer:{
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 40
     }
 });
 

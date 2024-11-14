@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ImageBackground, Image } from 'react-native'
+import { View, Text, TouchableOpacity, ImageBackground, Image, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState, useRef, useContext }from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
@@ -34,14 +34,19 @@ import SprinklerScreen from '../screens/Sprinkler/SprinklerScreen';
 import HistoryScreen from '../screens/History/HistoryScreen';
 import AccountSettingScreen from '../screens/AccountSettings/AccountSettingScreen';
 import AccountListScreen from '../screens/AccountList/AccountListScreen';
+import AdminReportScreen from '../screens/Reports/Admin/AdminReportScreen';
+import AdminCazaReportScreen from '../screens/Reports/Admin/Caza/AdminCazaReportScreen';
+import AdminLauroReportScreen from '../screens/Reports/Admin/Lauro/AdminLauroReportScreen';
+import AdminShalomReportScreen from '../screens/Reports/Admin/Shalom/AdminShalomReportScreen';
 
 const AppNavigator = () => {
     
     const [menuVisible, setMenuVisible] = useState(false);
     const [menuVisibleSprinkler, setMenuVisibleSprinkler] = useState(false);
-    const { setUser } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
     const [initializing, setInitializing] = useState(true);
     const [userRole, setUserRole] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
@@ -53,46 +58,42 @@ const AppNavigator = () => {
         const checkStoredUser = async () => {
           try {
             const storedUser = await AsyncStorage.getItem('user');
+            console.log('Stored User:', storedUser);  // Check what is stored
             if (storedUser) {
               const parsedUser = JSON.parse(storedUser);
               setUser(parsedUser);
               setUserRole(parsedUser.userType);
-              setInitializing(false);
-            } else {
-              setInitializing(false);
             }
           } catch (error) {
             console.error('Error fetching stored user:', error);
-            setInitializing(false);
           }
+          setInitializing(false); // Set initializing to false once data is fetched
         };
     
-        checkStoredUser(); 
+        checkStoredUser();
     
-        const unsubscribe = auth.onAuthStateChanged(async (user) => {
-          if (user) {
+        const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+          if (authUser) {
             try {
-              const userRef = doc(firestore, 'users', user.uid);
+              const userRef = doc(firestore, 'users', authUser.uid);
               const userDoc = await getDoc(userRef);
     
               if (userDoc.exists()) {
                 const userData = userDoc.data();
-    
                 await AsyncStorage.setItem('user', JSON.stringify({
-                  uid: user.uid,
-                  email: user.email,
+                  uid: authUser.uid,
+                  email: authUser.email,
                   ...userData,
-                })); 
+                }));
     
                 setUser({
-                  uid: user.uid,
-                  email: user.email,
+                  uid: authUser.uid,
+                  email: authUser.email,
                   ...userData,
                 });
     
                 setUserRole(userData.userType);
               } else {
-                console.log('No user data found in Firestore');
                 setUser(null);
                 setUserRole(null);
               }
@@ -106,23 +107,20 @@ const AppNavigator = () => {
             setUserRole(null);
           }
     
-          setInitializing(false);
+          setInitializing(false); // Once auth state change completes, stop initializing
         });
     
         return () => unsubscribe();
       }, []);
     
-      if (initializing) {
-        return <Text>Loading...</Text>;
-      }
+  
 
     return (
         <Provider>
             <NavigationContainer>
                 <Stack.Navigator>
                     {
-                        auth.currentUser || userRole ? (
-
+                        user && userRole  ? (
                             <>
                                 {userRole === 'admin' ? (
                                     <>
@@ -185,6 +183,90 @@ const AppNavigator = () => {
                                                         <Ionicons name="arrow-back-outline" size={32} color="white" />
                                                         <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
                                                             Restaurants
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        />
+
+                                        <Stack.Screen 
+                                            name="AdminReports" 
+                                            component={AdminReportScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                        <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            Reports
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        />
+                                        
+                                        <Stack.Screen 
+                                            name="AdminReportCaza" 
+                                            component={AdminCazaReportScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                        <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            Caza Plaza Reports
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        />
+
+                                        <Stack.Screen 
+                                            name="AdminReportLauro" 
+                                            component={AdminLauroReportScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                        <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            Don Lauro Reports
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        />
+
+                                        <Stack.Screen 
+                                            name="AdminReportShalom" 
+                                            component={AdminShalomReportScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                        <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            Plaza De Shalom Reports
                                                         </Text>
                                                     </TouchableOpacity>
                                                 )
@@ -588,7 +670,6 @@ const AppNavigator = () => {
                                     })}
                                 />
                             </>
-                            
                         ) : (
                             <>
                                 <Stack.Screen 
@@ -610,8 +691,8 @@ const AppNavigator = () => {
                                     name="Forgot" 
                                     component={ForgotPasswordScreen} 
                                     options={{ headerShown: false }}
-                                />  
-                            </>
+                                />
+                            </>     
                         )
                     }
                 </Stack.Navigator>

@@ -1,27 +1,46 @@
-import { View, Text, SafeAreaView } from 'react-native'
+import { View, Text, SafeAreaView, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react';
 
 import { UserContext } from '../../UserContext';
 
 import styles from './guide.style';
 
-import Stepper from '../../components/Stepper'
+import Stepper from '../../components/Stepper';
 
 const GuideScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
-  console.log(user);
+  
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="blue" />
+      </SafeAreaView>
+    );
+  }
+
+  // After the delay, render the actual content
   return (
     <SafeAreaView style={styles.container}>
-        <LinearGradient
-            colors={['#11774e', '#14b045', '#0c403b']}
-            locations={[0, 0.4, 1]}
-            style={styles.gradientBackground}
-        >
-            <Stepper navigation={navigation} />
-        </LinearGradient>
+      <LinearGradient
+        colors={['#11774e', '#14b045', '#0c403b']}
+        locations={[0, 0.4, 1]}
+        style={styles.gradientBackground}
+      >
+        <Stepper navigation={navigation} />
+      </LinearGradient>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default GuideScreen
+export default GuideScreen;

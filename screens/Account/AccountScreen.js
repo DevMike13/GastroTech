@@ -20,7 +20,7 @@ const AccountScreen = ({ navigation }) => {
       setUser(null);
       await AsyncStorage.removeItem('user');
       navigation.reset({
-        index: 0,
+        // index: 0,
         routes: [{ name: 'Login' }],
       });
     } catch (error) {
