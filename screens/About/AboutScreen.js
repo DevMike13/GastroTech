@@ -42,6 +42,27 @@ const AboutScreen = ({ navigation }) => {
         }
     };
 
+    const handleInstagramPress = async () => {
+        const instagramUrl = 'instagram://user?username=gastrotech2025'; // Opens Instagram app if installed
+        const webUrl = 'https://www.instagram.com/gastrotech2025/?igsh=bDczcm1pcXc1MHVw#'; // Fallback to browser if app is not available
+    
+        try {
+            const supported = await Linking.canOpenURL(instagramUrl);
+            if (supported) {
+                await Linking.openURL(instagramUrl);
+            } else {
+                await Linking.openURL(webUrl);
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'Unable to open Instagram page.',
+            });
+        }
+    };
+    
+
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.contentContainer}>
@@ -75,7 +96,7 @@ const AboutScreen = ({ navigation }) => {
                             style={styles.socialImage}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleInstagramPress}>
                         <Image
                             source={require('../../assets/images/instagram.png')}
                             resizeMode='contain'
