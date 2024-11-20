@@ -6,19 +6,21 @@ import Toast from 'react-native-toast-message';
 import { UserContext } from '../../UserContext';
 import { firebase } from '../../firebase';
 
-import styles from './history.style';
+import styles from './notification.style';
 
-const HistoryScreen = () => {
+const NotificationScreen = () => {
     const [historyRecords, setHistoryRecords] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
-
+    const { user } = useContext(UserContext);
+    
     useEffect(() => {
         const fetchHistoryRecords = async () => {
             try {
                 const records = [];
                 const querySnapshot = await firebase.firestore()
-                    .collection('fire_detection_records')
+                    .collection('notifications')
+                    .where('restaurant_name', '==', user.restaurantName)
                     .orderBy('date_time', 'desc') // Order by date_time in descending order
                     .get();
                 
@@ -38,7 +40,7 @@ const HistoryScreen = () => {
         };
 
         fetchHistoryRecords();
-    }, []);
+    }, [user.restaurantName]);
 
     const showDeleteConfirmation = (record) => {
         setSelectedRecord(record);
@@ -49,7 +51,7 @@ const HistoryScreen = () => {
         if (!selectedRecord) return;
 
         try {
-            await firebase.firestore().collection('fire_detection_records').doc(selectedRecord.id).delete();
+            await firebase.firestore().collection('notifications').doc(selectedRecord.id).delete();
             setHistoryRecords((prevRecords) => prevRecords.filter((rec) => rec.id !== selectedRecord.id));
             setModalVisible(false);
             setSelectedRecord(null);
@@ -69,12 +71,11 @@ const HistoryScreen = () => {
             });
         }
     };
-    
-  return (
-    <SafeAreaView style={styles.container}>
-        
-        <ScrollView contentContainerStyle={styles.historyContainer}>
-            {historyRecords.length > 0 ? (
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <ScrollView contentContainerStyle={styles.historyContainer}>
+                {historyRecords.length > 0 ? (
                     historyRecords.map((record) => (
                         <View style={styles.contentContainer} key={record.id}>
                             <View>
@@ -102,33 +103,35 @@ const HistoryScreen = () => {
                     <View style={styles.noDataContainer}>
                         <Text style={styles.noDataText}>No Data Found</Text>
                     </View>
-            )}
-        </ScrollView>
-        {/* Modal for delete confirmation */}
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-        >
-            <View style={styles.modalOverlay}>
-                <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Delete Record</Text>
-                    <Text style={styles.modalText}>Are you sure you want to delete this record?</Text>
-                    <View style={styles.modalButtonContainer}>
-                        <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
-                            <Text style={styles.cancelButtonText}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.confirmButton} onPress={deleteRecord}>
-                            <Text style={styles.confirmButtonText}>Delete</Text>
-                        </TouchableOpacity>
+                )}
+            </ScrollView>
+
+            {/* Modal for delete confirmation */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Delete Record</Text>
+                        <Text style={styles.modalText}>Are you sure you want to delete this record?</Text>
+                        <View style={styles.modalButtonContainer}>
+                            <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
+                                <Text style={styles.cancelButtonText}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.confirmButton} onPress={deleteRecord}>
+                                <Text style={styles.confirmButtonText}>Delete</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </View>
-        </Modal>
-        <Toast position="bottom"/>
-    </SafeAreaView>
-  )
+            </Modal>
+            
+            <Toast position="bottom" />
+        </SafeAreaView>
+    )
 }
 
-export default HistoryScreen
+export default NotificationScreen

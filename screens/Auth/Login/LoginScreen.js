@@ -4,9 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
+import * as Notifications from "expo-notifications";
 
 import { UserContext } from '../../../UserContext';
 import { auth, firestore } from '../../../firebase';
+import { usePushNotification } from '../../../useNotification';
 
 import styles from './login.style';
 
@@ -31,6 +33,8 @@ const LoginScreen = ({ navigation }) => {
   const handleGoToDashboard = () => {
     navigation.navigate('Dashboard')
   };  
+
+  const { registerAndStorePushToken } = usePushNotification();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -48,7 +52,11 @@ const LoginScreen = ({ navigation }) => {
         setUser(userData);
         await AsyncStorage.setItem('user', JSON.stringify({ uid: user.uid, email: user.email, ...userData }));
 
+        registerAndStorePushToken(userData.restaurantName);
+
         setIsLoading(false);
+       
+
       } else {
           console.log('No user data found!');
           Toast.show({

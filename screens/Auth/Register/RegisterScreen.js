@@ -10,6 +10,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
 import { UserContext } from '../../../UserContext';
+import { usePushNotification } from '../../../useNotification';
 
 import styles from './register.style';
 import { COLORS, FONT } from '../../../assets/theme/theme';
@@ -35,6 +36,7 @@ const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [mobileNo, setMobileNo] = useState('');
     const [password, setPassword] = useState('');
+    const { registerAndStorePushToken } = usePushNotification();
 
     const { setUser } = useContext(UserContext);
 
@@ -51,6 +53,10 @@ const RegisterScreen = ({ navigation }) => {
             setIsLoading(true);
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
+
+            console.log('User registered successfully:', user);
+
+            registerAndStorePushToken(restaurantName);
 
             await setDoc(doc(firestore, 'users', user.uid), {
                 fullName,
@@ -81,7 +87,8 @@ const RegisterScreen = ({ navigation }) => {
                 userType: 'user'
             });
 
-            console.log('User registered successfully:', user);
+           
+
             Toast.show({
                 type: 'success',
                 text1: 'Success',

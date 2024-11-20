@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Menu, Provider } from 'react-native-paper';
 
 import { UserContext } from '../UserContext';
-import { auth, firestore } from '../firebase';
+import { auth, firestore, firebase } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
 import { FONT, SIZES, COLORS } from "../assets/theme/theme";
@@ -38,8 +38,9 @@ import AdminReportScreen from '../screens/Reports/Admin/AdminReportScreen';
 import AdminCazaReportScreen from '../screens/Reports/Admin/Caza/AdminCazaReportScreen';
 import AdminLauroReportScreen from '../screens/Reports/Admin/Lauro/AdminLauroReportScreen';
 import AdminShalomReportScreen from '../screens/Reports/Admin/Shalom/AdminShalomReportScreen';
+import NotificationScreen from '../screens/Notifications/NotificationScreen';
 
-const AppNavigator = () => {
+const AppNavigator = ({ navigation }) => {
     
     const [menuVisible, setMenuVisible] = useState(false);
     const [menuVisibleSprinkler, setMenuVisibleSprinkler] = useState(false);
@@ -47,6 +48,7 @@ const AppNavigator = () => {
     const [initializing, setInitializing] = useState(true);
     const [userRole, setUserRole] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [newStatusCount, setNewStatusCount] = useState(0);
 
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
@@ -113,6 +115,43 @@ const AppNavigator = () => {
         return () => unsubscribe();
       }, []);
     
+      useEffect(() => {
+        if (user && user.restaurantName) { // Check if user is valid and restaurantName exists
+            const unsubscribe = firebase.firestore()
+                .collection('notifications')
+                .where('status', '==', 'new')
+                .where('restaurant_name', '==', user.restaurantName)
+                .onSnapshot(snapshot => {
+                    setNewStatusCount(snapshot.size);
+                });
+            return () => unsubscribe();
+        } else {
+            // Handle case when user or restaurantName is invalid (optional)
+            setNewStatusCount(0); // Reset status count to 0 if no valid user or restaurantName
+        }
+    }, [user]); // Depend on user to re-run effect when user changes
+    
+    const handleGoToHistory = async (navigation) => {
+        try {
+            const querySnapshot = await firebase.firestore()
+                .collection('notifications')
+                .where('status', '==', 'new')
+                .where('restaurant_name', '==', user.restaurantName)
+                .get();
+    
+            const batch = firebase.firestore().batch();
+    
+            querySnapshot.forEach((doc) => {
+                batch.update(doc.ref, { status: 'old' });
+            });
+    
+            await batch.commit();
+    
+            navigation.navigate('Notifications');
+        } catch (error) {
+            console.error("Error updating records status: ", error);
+        }
+    }
   
 
     return (
@@ -341,8 +380,18 @@ const AppNavigator = () => {
                                                 ),
                                                 headerRight: () => (
                                                     <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                                        <TouchableOpacity style={{ paddingHorizontal: 10 }} >
+                                                        <TouchableOpacity style={{ paddingHorizontal: 10, position: 'relative' }} onPress={() => handleGoToHistory(navigation)}>
                                                             <Ionicons name="notifications" size={32} color="white" />
+                                                            {
+                                                                newStatusCount > 0 ? (
+                                                                    <Text style={{ position: 'absolute', right: 5, backgroundColor: 'red', paddingHorizontal: 5, borderRadius: 100, color: 'white'}}>
+                                                                        {newStatusCount}
+                                                                    </Text>
+                                                                ) : (
+                                                                    <></>
+                                                                )
+                                                            }
+                                                            
                                                         </TouchableOpacity>
                                                     
                                                         <Menu
@@ -504,6 +553,27 @@ const AppNavigator = () => {
                                                         </Menu>
                                                     </View>
                                                 ),
+                                            })}
+                                        />
+
+                                        <Stack.Screen 
+                                            name="Notifications" 
+                                            component={NotificationScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                        <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            Notifications
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
                                             })}
                                         />
                                     </>
