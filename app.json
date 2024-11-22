@@ -15,16 +15,16 @@
       "supportsTablet": true
     },
     "android": {
-      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCqxFzSoCIhfLFO9ZFyOtVCI1e8tcOP0G4"
+          "apiKey": "AIzaSyDNfENjtKNG0FKI8JSeYr9T5EDHIBEdmUE"
         }
       },
+      "googleServicesFile": "./google-services.json",
       "package": "com.hymike.GastroTech"
     },
     "web": {
