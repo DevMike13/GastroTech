@@ -90,7 +90,7 @@ const NotificationScreen = () => {
                                         : 'N/A'}
                                 </Text>
                                 <Text style={styles.recordWhatText}>
-                                    Fire Detected
+                                    {record.fire_status}
                                 </Text>
                             </View>
 

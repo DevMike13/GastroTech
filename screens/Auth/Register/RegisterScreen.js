@@ -64,7 +64,8 @@ const RegisterScreen = ({ navigation }) => {
                 address,
                 email,
                 mobileNo,
-                userType: 'user'
+                userType: 'user',
+                is_approved: false
             });
 
             await AsyncStorage.setItem('user', JSON.stringify({
@@ -74,7 +75,8 @@ const RegisterScreen = ({ navigation }) => {
                 address,
                 email,
                 mobileNo,
-                userType: 'user'
+                userType: 'user',
+                is_approved: false
             }));
 
             setUser({
@@ -84,10 +86,9 @@ const RegisterScreen = ({ navigation }) => {
                 address,
                 email,
                 mobileNo,
-                userType: 'user'
+                userType: 'user',
+                is_approved: false
             });
-
-           
 
             Toast.show({
                 type: 'success',
@@ -136,7 +137,10 @@ const RegisterScreen = ({ navigation }) => {
                                             style={styles.inInput}
                                             placeholder='Full Name'
                                             value={fullName}
-                                            onChangeText={setFullName}
+                                            onChangeText={(text) => {
+                                                const filteredText = text.replace(/[^a-zA-Z\s]/g, '');
+                                                setFullName(filteredText);
+                                            }}
                                             placeholderTextColor="white"
                                         />
                                         <View>

@@ -9,7 +9,7 @@ import { Menu, Provider } from 'react-native-paper';
 
 import { UserContext } from '../UserContext';
 import { auth, firestore, firebase } from '../firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 
 import { FONT, SIZES, COLORS } from "../assets/theme/theme";
 
@@ -57,63 +57,110 @@ const AppNavigator = ({ navigation }) => {
     const closeMenuSprinkler = () => setMenuVisibleSprinkler(false);
 
     useEffect(() => {
+        let unsubscribeUserListener = null;
+        let unsubscribeAuthListener = null;
+      
         const checkStoredUser = async () => {
           try {
             const storedUser = await AsyncStorage.getItem('user');
-            console.log('Stored User:', storedUser);  // Check what is stored
             if (storedUser) {
               const parsedUser = JSON.parse(storedUser);
-              setUser(parsedUser);
-              setUserRole(parsedUser.userType);
+      
+              // Set up a Firestore real-time listener for the user's document
+              const userRef = doc(firestore, 'users', parsedUser.uid);
+              unsubscribeUserListener = onSnapshot(userRef, async (userDoc) => {
+                if (userDoc.exists()) {
+                  const userData = userDoc.data();
+      
+                  if (!userData.is_approved) {
+                    // If not approved, clear AsyncStorage and reset user state
+                    await AsyncStorage.removeItem('user');
+                    setUser(null);
+                    setUserRole(null);
+                    console.log('User is not approved');
+                  } else {
+                    // If approved, set the user data and user role
+                    await AsyncStorage.setItem('user', JSON.stringify({
+                      uid: parsedUser.uid,
+                      email: parsedUser.email,
+                      ...userData,
+                    }));
+                    setUser({
+                      uid: parsedUser.uid,
+                      email: parsedUser.email,
+                      ...userData,
+                    });
+                    setUserRole(userData.userType);
+                  }
+                } else {
+                  // If the user's document is missing, clear AsyncStorage and reset
+                  await AsyncStorage.removeItem('user');
+                  setUser(null);
+                  setUserRole(null);
+                }
+              });
+            } else {
+              setUser(null);
+              setUserRole(null);
             }
           } catch (error) {
-            console.error('Error fetching stored user:', error);
+            console.error('Error checking stored user:', error);
+            setUser(null);
+            setUserRole(null);
           }
-          setInitializing(false); // Set initializing to false once data is fetched
+          setInitializing(false); // Stop initializing once done
         };
-    
+      
         checkStoredUser();
-    
-        const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+      
+        // Listen to authentication state changes
+        unsubscribeAuthListener = auth.onAuthStateChanged(async (authUser) => {
           if (authUser) {
-            try {
-              const userRef = doc(firestore, 'users', authUser.uid);
-              const userDoc = await getDoc(userRef);
-    
+            const userRef = doc(firestore, 'users', authUser.uid);
+            unsubscribeUserListener = onSnapshot(userRef, async (userDoc) => {
               if (userDoc.exists()) {
                 const userData = userDoc.data();
-                await AsyncStorage.setItem('user', JSON.stringify({
-                  uid: authUser.uid,
-                  email: authUser.email,
-                  ...userData,
-                }));
-    
-                setUser({
-                  uid: authUser.uid,
-                  email: authUser.email,
-                  ...userData,
-                });
-    
-                setUserRole(userData.userType);
+      
+                if (!userData.is_approved) {
+                  await AsyncStorage.removeItem('user');
+                  setUser(null);
+                  setUserRole(null);
+                  console.log('User is not approved');
+                } else {
+                  await AsyncStorage.setItem('user', JSON.stringify({
+                    uid: authUser.uid,
+                    email: authUser.email,
+                    ...userData,
+                  }));
+                  setUser({
+                    uid: authUser.uid,
+                    email: authUser.email,
+                    ...userData,
+                  });
+                  setUserRole(userData.userType);
+                }
               } else {
                 setUser(null);
                 setUserRole(null);
               }
-            } catch (error) {
-              console.error('Error fetching user data:', error);
-              setUser(null);
-              setUserRole(null);
-            }
+            });
           } else {
             setUser(null);
             setUserRole(null);
           }
-    
-          setInitializing(false); // Once auth state change completes, stop initializing
+      
+          setInitializing(false);
         });
-    
-        return () => unsubscribe();
+      
+        // Cleanup both listeners when the component unmounts
+        return () => {
+          if (unsubscribeUserListener) unsubscribeUserListener();
+          if (unsubscribeAuthListener) unsubscribeAuthListener();
+        };
       }, []);
+      
+      
+      
     
       useEffect(() => {
         if (user && user.restaurantName) { // Check if user is valid and restaurantName exists

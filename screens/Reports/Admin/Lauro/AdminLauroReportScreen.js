@@ -18,6 +18,8 @@ import { COLORS, FONT } from '../../../../assets/theme/theme';
 const AdminLauroReportScreen = () => {
     const [gasData, setGasData] = useState({ labels: [], datasets: [] });
     const [temperatureData, setTemperatureData] = useState({ labels: [], datasets: [] });
+    const [fireData, setFireData] = useState({ labels: [], datasets: [] });
+    const [smokeData, setSmokeData] = useState({ labels: [], datasets: [] });
     const [startDate, setStartDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -97,6 +99,101 @@ const AdminLauroReportScreen = () => {
       
           setGasData({ labels, datasets: [{ data: gasLevels }] });
           setTemperatureData({ labels, datasets: [{ data: temperatures }] });
+
+          // Fire Detection Logic - Only for the selected startDate
+        const fireDetectionQuery = firestore
+        .collection('fire_detection_records')
+        .where('restaurant_name', '==', 'Don Lauro Restaurant')
+        .where('fire_status', '==', 'Fire Detected')
+        .where('date_time', '>=', filterStartDate)  // Filter startDate
+        .where('date_time', '<=', currentDate)  // Filter end of the selected day
+        .orderBy('date_time', 'asc');
+
+        const fireDetectionSnapshot = await fireDetectionQuery.get();
+
+        const fireRecordsMap = new Map();
+
+        fireDetectionSnapshot.forEach((doc) => {
+            const data = doc.data();
+            const dateTime = data.date_time.toDate(); // Convert Firestore timestamp to Date object
+
+            const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dateTime.getDay()];
+            const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][dateTime.getMonth()];
+            const date = dateTime.getDate(); 
+
+            const formattedLabel = `${dayOfWeek} (${month}. ${date})`;
+
+            const dateKey = `${dateTime.getFullYear()}-${(dateTime.getMonth() + 1)
+            .toString()
+            .padStart(2, '0')}-${dateTime.getDate().toString().padStart(2, '0')}`;
+
+            // Convert time to minutes since midnight
+            const timeInMinutes = dateTime.getHours() * 60 + dateTime.getMinutes();
+
+            if (!fireRecordsMap.has(dateKey) || fireRecordsMap.get(dateKey).time < timeInMinutes) {
+            fireRecordsMap.set(dateKey, { label: formattedLabel, time: timeInMinutes });
+            }
+        });
+
+        // Extract labels (formatted date) and dataset data (times as minutes since midnight)
+        const fireLabels = Array.from(fireRecordsMap.values()).map((record) => record.label);
+        const fireTimes = Array.from(fireRecordsMap.values()).map((record) => record.time);
+
+        setFireData({
+            labels: fireLabels, // Use formatted labels here
+            datasets: [{
+            data: fireTimes,
+            }],
+        });
+
+        // Smoke Detection Logic - Only for the selected startDate
+        const smokeDetectionQuery = firestore
+            .collection('fire_detection_records')
+            .where('restaurant_name', '==', 'Don Lauro Restaurant')
+            .where('fire_status', '==', 'Smoke Detected')
+            .where('date_time', '>=', filterStartDate)
+            .where('date_time', '<=', currentDate)
+            .orderBy('date_time', 'asc');
+
+        const smokeDetectionSnapshot = await smokeDetectionQuery.get();
+
+        const smokeRecordsMap = new Map();
+
+        smokeDetectionSnapshot.forEach((doc) => {
+            const data = doc.data();
+            const dateTime = data.date_time.toDate(); // Convert Firestore timestamp to Date object
+
+            const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dateTime.getDay()];
+            const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][dateTime.getMonth()];
+            const date = dateTime.getDate(); 
+
+            const formattedLabel = `${dayOfWeek} (${month}. ${date})`;
+
+            const dateKey = `${dateTime.getFullYear()}-${(dateTime.getMonth() + 1)
+                .toString()
+                .padStart(2, '0')}-${dateTime.getDate().toString().padStart(2, '0')}`;
+
+            const timeInMinutes = dateTime.getHours() * 60 + dateTime.getMinutes();
+
+            if (!smokeRecordsMap.has(dateKey) || smokeRecordsMap.get(dateKey).time < timeInMinutes) {
+                smokeRecordsMap.set(dateKey, { label: formattedLabel, time: timeInMinutes });
+            }
+        });
+
+        // Extract smoke labels and dataset data (times as minutes since midnight)
+        const smokeLabels = Array.from(smokeRecordsMap.values()).map((record) => record.label);
+        const smokeTimes = Array.from(smokeRecordsMap.values()).map((record) => record.time);
+
+        setSmokeData({
+            labels: smokeLabels,
+            datasets: [{
+                data: smokeTimes,
+            }],
+        });
+
+
+        console.log('Fire Data:', fireData);
+        console.log('Smoke Data:', smokeData);
       
         } catch (error) {
           console.error("Error fetching data: ", error);
@@ -269,6 +366,146 @@ const AdminLauroReportScreen = () => {
                                         </View>
                                     )
                                     
+                                }
+                            </View>
+                        </View>
+
+                        <View>
+                            <View style={{ marginVertical: 10}}>
+                                <Text style={styles.reportTitleText}>Fire Detection</Text>
+                                {
+                                    fireData.datasets.length > 0 && fireData.labels.length > 0 ? (
+                                        
+                                            <LineChart
+                                                data={fireData}
+                                                width={fireData.labels.length > 5 ? fireData.datasets.length * 1000 : Dimensions.get('window').width}
+                                                height={220}
+                                                yAxisInterval={1}
+                                                verticalLabelRotation={10}
+                                                chartConfig={{
+                                                    backgroundColor: "#ffffff",
+                                                    backgroundGradientFrom: "#ffffff",
+                                                    backgroundGradientTo: "#ffffff",
+                                                    decimalPlaces: 2,
+                                                    color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+                                                    labelColor: (opacity = 1) => `rgba(139, 0, 0, ${opacity})`,
+                                                    propsForDots: {
+                                                        r: "6",
+                                                        strokeWidth: "2",
+                                                        stroke: "#ff0000"
+                                                    },
+                                                }}
+                                                bezier
+                                                style={{
+                                                    marginVertical: 8,
+                                                    borderRadius: 10
+                                                }}
+                                                renderDotContent={({ x, y, index }) => {
+                                                    const dataValue = fireData.datasets[0].data[index]; 
+                                                    
+                                                    const formatTimeFromMinutes = (minutes) => {
+                                                        const hours = Math.floor(minutes / 60); 
+                                                        const mins = minutes % 60;
+                                                        const ampm = hours >= 12 ? 'PM' : 'AM';
+                                                        const hour12 = hours % 12 || 12; 
+                                                        const formattedTime = `${hour12}:${mins < 10 ? '0' : ''}${mins} ${ampm}`;
+                                                        return formattedTime;
+                                                    };
+                                                
+                                                    const formattedTime = formatTimeFromMinutes(dataValue);
+                                                
+                                                    return (
+                                                        <Text
+                                                            key={`dot-${index}-${dataValue}`}
+                                                            style={{
+                                                                position: 'absolute',
+                                                                top: y - 24,
+                                                                left: x - 10,
+                                                                fontSize: 12,
+                                                                color: "#000",
+                                                            }}
+                                                        >
+                                                            {formattedTime}
+                                                        </Text>
+                                                    );
+                                                }}
+                                            />
+                                    
+                                    ) : (
+                                        <View style={styles.loadingContainer}>
+                                            <ActivityIndicator size="large" />
+                                        </View>
+                                    )
+                                }
+                            </View>
+                        </View> 
+
+                        <View>
+                            <View style={{ marginVertical: 10 }}>
+                                <Text style={styles.reportTitleText}>Smoke Detection</Text>
+                                {
+                                    // Check if smokeData and datasets are available
+                                    smokeData.datasets.length > 0 && smokeData.labels.length > 0 ? (
+                                        <LineChart
+                                            data={smokeData}
+                                            width={smokeData.labels.length > 5 ? smokeData.datasets.length * 1000 : Dimensions.get('window').width}
+                                            height={220}
+                                            yAxisInterval={1}
+                                            verticalLabelRotation={10}
+                                            chartConfig={{
+                                                backgroundColor: "#ffffff",
+                                                backgroundGradientFrom: "#f2f2f2",
+                                                backgroundGradientTo: "#e6e6e6",
+                                                decimalPlaces: 2,
+                                                color: (opacity = 1) => `rgba(169, 169, 169, ${opacity})`,
+                                                labelColor: (opacity = 1) => `rgba(105, 105, 105, ${opacity})`,
+                                                propsForDots: {
+                                                    r: "6",
+                                                    strokeWidth: "2",
+                                                    stroke: "#808080"
+                                                },
+                                            }}
+                                            bezier
+                                            style={{
+                                                marginVertical: 8,
+                                                borderRadius: 10
+                                            }}
+                                            renderDotContent={({ x, y, index }) => {
+                                                const dataValue = smokeData.datasets[0].data[index];
+
+                                                const formatTimeFromMinutes = (minutes) => {
+                                                    const hours = Math.floor(minutes / 60);
+                                                    const mins = minutes % 60;
+                                                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                                                    const hour12 = hours % 12 || 12;
+                                                    const formattedTime = `${hour12}:${mins < 10 ? '0' : ''}${mins} ${ampm}`;
+                                                    return formattedTime;
+                                                };
+
+                                                const formattedTime = formatTimeFromMinutes(dataValue);
+
+                                                return (
+                                                    <Text
+                                                        key={`dot-${index}-${dataValue}`}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: y - 24,
+                                                            left: x - 10,
+                                                            fontSize: 12,
+                                                            color: "#000",
+                                                        }}
+                                                    >
+                                                        {formattedTime}
+                                                    </Text>
+                                                );
+                                            }}
+                                        />
+                                    ) : (
+                                        // Show a loading spinner if smokeData is not available or empty
+                                        <View style={styles.loadingContainer}>
+                                            <ActivityIndicator size="large" />
+                                        </View>
+                                    )
                                 }
                             </View>
                         </View>

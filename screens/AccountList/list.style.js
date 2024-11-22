@@ -44,6 +44,12 @@ const styles = StyleSheet.create({
         borderRadius: SIZES.large
 
     },
+    approveButton:{
+        backgroundColor: 'green',
+        padding: 5,
+        borderRadius: SIZES.large
+
+    },
     modalOverlay: {
         flex: 1,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',

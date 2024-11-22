@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, SafeAreaView, ActivityIndicator, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState, useEffect, useContext } from 'react';
 
@@ -24,7 +24,11 @@ const GuideScreen = ({ navigation }) => {
   if (isLoading) {
     return (
       <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="blue" />
+        <Image
+          source={require('../../assets/images/logo.png')}
+          resizeMode='contain'
+          style={{ width: 200 }}
+        />
       </SafeAreaView>
     );
   }

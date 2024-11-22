@@ -14,7 +14,7 @@ import styles from './login.style';
 
 const LoginScreen = ({ navigation }) => {
 
-  const { setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const [isLoading, setIsLoading] = useState();
@@ -43,16 +43,31 @@ const LoginScreen = ({ navigation }) => {
     try {
       setIsLoading(true);
       const userCredential = await auth.signInWithEmailAndPassword(email, password);
-      const user = userCredential.user;
+      const userCre = userCredential.user;
 
-      const userDoc = await firestore.collection('users').doc(user.uid).get();
+      const userDoc = await firestore.collection('users').doc(userCre.uid).get();
       if (userDoc.exists) {
         const userData = userDoc.data();
         console.log('User data:', userData);
+
+        if (!userData.is_approved) {
+          await AsyncStorage.removeItem('user');
+          setUser(null);
+          
+          Toast.show({
+              type: 'error',
+              text1: 'Account not approved',
+              text2: 'Your account is pending approval. Please contact support.',
+              visibilityTime: 3000,
+          });
+          setIsLoading(false); 
+          return; 
+        } 
         setUser(userData);
-        await AsyncStorage.setItem('user', JSON.stringify({ uid: user.uid, email: user.email, ...userData }));
+        await AsyncStorage.setItem('user', JSON.stringify({ uid: userCre.uid, email: userCre.email, ...userData }));
 
         registerAndStorePushToken(userData.restaurantName);
+        
 
         setIsLoading(false);
        

@@ -61,6 +61,9 @@ const styles = StyleSheet.create({
         color: COLORS.primary,
         fontSize: SIZES.large,
     },
+    toggleText:{
+        fontFamily: FONT.bold,
+    }
 });
 
 export default styles;

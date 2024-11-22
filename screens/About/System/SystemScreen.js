@@ -7,8 +7,9 @@ import styles from './system.style';
 import Tabs from './Tabs/tabs';
 import Circuit from './Circuit/Circuit';
 import Code from './Code/Code';
+import Manual from './Manual/Manual';
 
-const tabList = ["Circuit Information", "System Code"];
+const tabList = ["Circuit Information", "System Code", "User Manual"];
 
 const SystemScreen = ({ navigation }) => {
 
@@ -23,6 +24,10 @@ const SystemScreen = ({ navigation }) => {
       case "System Code":
         return <Code
           title='System Code'
+        />
+      case "User Manual":
+        return <Manual
+          title='User Manual'
         />
       default:
       break;
