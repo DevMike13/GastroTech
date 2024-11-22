@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "378821618111",
+    "firebase_url": "https://gastrotech-6776f-default-rtdb.firebaseio.com",
+    "project_id": "gastrotech-6776f",
+    "storage_bucket": "gastrotech-6776f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:378821618111:android:63bd005adb539c4844590a",
+        "android_client_info": {
+          "package_name": "com.hymike.GastroTech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWTPWiJATomJWEagPL1ed_jgjOozs1OYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

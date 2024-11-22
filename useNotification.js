@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { firebase } from './firebase';
@@ -58,6 +58,31 @@ export const usePushNotification = () => {
 
     return token;
   }
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      // Set the expoPushToken using the setter function
+      setExpoPushToken(token);
+    });
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        // Set the notification using the setter function
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   // Function to store the device token in Firestore along with restaurantName
   // Function to store or update the device token in Firestore along with restaurantName
@@ -107,6 +132,7 @@ const storeDeviceTokenInFirestore = async (token, restaurantName) => {
       storeDeviceTokenInFirestore(token, restaurantName);
     }
   };
+
 
   return {
     expoPushToken,
