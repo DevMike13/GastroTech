@@ -105,6 +105,14 @@ const styles = StyleSheet.create({
         fontFamily: FONT.medium,
         color: 'blue',
         textDecorationLine: 'underline'
+    },
+    agreementContainer:{
+        marginTop: -25
+    },
+    agreementText:{
+        color: COLORS.lightWhite,
+        textDecorationLine: 'underline',
+        fontFamily: FONT.regular
     }
 });
 

@@ -433,7 +433,7 @@ const AdminCazaReportScreen = () => {
                                     
                                     ) : (
                                         <View style={styles.loadingContainer}>
-                                            <ActivityIndicator size="large" />
+                                            <Text style={styles.noDataText}>No Detection to Selected Date</Text>
                                         </View>
                                     )
                                 }
@@ -503,7 +503,7 @@ const AdminCazaReportScreen = () => {
                                     ) : (
                                         // Show a loading spinner if smokeData is not available or empty
                                         <View style={styles.loadingContainer}>
-                                            <ActivityIndicator size="large" />
+                                            <Text style={styles.noDataText}>No Detection to Selected Date</Text>
                                         </View>
                                     )
                                 }

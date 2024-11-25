@@ -23,12 +23,18 @@ const GuideScreen = ({ navigation }) => {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <SafeAreaView style={styles.container}>
+        <LinearGradient
+          colors={['#11774e', '#14b045', '#0c403b']}
+          locations={[0, 0.4, 1]}
+          style={styles.gradientBackground}
+        >
         <Image
           source={require('../../assets/images/logo.png')}
           resizeMode='contain'
-          style={{ width: 200 }}
+          style={{ width: 200, height: '100%', alignSelf: 'center' }}
         />
+        </LinearGradient>
       </SafeAreaView>
     );
   }

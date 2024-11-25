@@ -30,9 +30,14 @@ const LoginScreen = ({ navigation }) => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
+  const handleGoToAgreement = () => {
+    navigation.navigate('Agreement')
+  };  
+
   const handleGoToDashboard = () => {
     navigation.navigate('Dashboard')
   };  
+
 
   const { registerAndStorePushToken } = usePushNotification();
   
@@ -167,6 +172,13 @@ const LoginScreen = ({ navigation }) => {
             <TouchableOpacity onPress={handleGoToRegistration}>
               <Text style={styles.signupButtonText}>
                 Sign Up
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.agreementContainer}>
+            <TouchableOpacity onPress={handleGoToAgreement}>
+              <Text style={styles.agreementText}>
+                Non-disclosure Agreement
               </Text>
             </TouchableOpacity>
           </View>

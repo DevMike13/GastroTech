@@ -35,7 +35,17 @@ const styles = StyleSheet.create({
         color: COLORS.white
     },
     loadingContainer:{
-        height: 300
+        height: 220,
+        backgroundColor: "white",
+        borderRadius: SIZES.small,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    noDataText:{
+        fontFamily: FONT.medium,
+        fontStyle: 'italic',
+        color: COLORS.gray
     },
     calendarContainer:{
         display: 'flex',

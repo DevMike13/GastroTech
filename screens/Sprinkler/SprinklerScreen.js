@@ -11,14 +11,13 @@ import styles from './sprinkler.style';
 
 const SprinklerScreen = ({ navigation }) => {
     const { user } = useContext(UserContext);
-    console.log(user);
 
     const [countdown, setCountdown] = useState(0);
     const [sprinkler, setSprinkler] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const handleGoToDashboard = () => {
-        navigation.navigate('Dashboard');
+    const handleGoToDashboard = () => { 
+        navigation.goBack();
     }
 
     useEffect(() => {
@@ -53,7 +52,7 @@ const SprinklerScreen = ({ navigation }) => {
             countdownRef.off();
             sprinklerRef.off();
         };
-    }, []);
+    }, [countdown, sprinkler]);
 
     const toggleSprinkler = () => {
         const newSprinklerState = sprinkler === "ON" ? "OFF" : "ON";
@@ -80,7 +79,7 @@ const SprinklerScreen = ({ navigation }) => {
             style={styles.gradientBackground}
         >
             {
-                countdown > 0 && sprinkler == "OFF" ? (
+                countdown != 0 && sprinkler == "OFF" ? (
                     <View style={styles.contentContainer}>
                         <Image
                             source={require('../../assets/images/emergency.png')}

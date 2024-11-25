@@ -1,5 +1,6 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, ActivityIndicator } from 'react-native'
-import {React, useState, useContext, useEffect} from 'react'
+import {React, useState, useContext, useEffect, useCallback } from 'react'
+import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,7 +15,9 @@ const DashboardScreen = ({ navigation }) => {
     const [smoke, setSmoke] = useState(null);
     const [gas, setGas] = useState(null);
     const [fire, setFire] = useState(null);
+    const [countdown, setCountdown] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [sprinkler, setSprinkler] = useState(null);
     const { user } = useContext(UserContext);
 
     const handleGoToSprinkler = () => {
@@ -25,23 +28,29 @@ const DashboardScreen = ({ navigation }) => {
         
         if (!user || !user.restaurantName) return;
     
-        let temperatureRef, smokeRef, gasRef, fireRef;
+        let temperatureRef, smokeRef, gasRef, fireRef, countRef, sprinklerRef;
         
         if (user.restaurantName === "Caza Plaza") {
             temperatureRef = firebase.database().ref('/CazaPlaza/Temperature');
             smokeRef = firebase.database().ref('/CazaPlaza/Smoke');
             gasRef = firebase.database().ref('/CazaPlaza/Gas');
             fireRef = firebase.database().ref('/CazaPlaza/Fire');
+            countRef = firebase.database().ref('/CazaPlaza/Countdown');
+            sprinklerRef = firebase.database().ref('/CazaPlaza/SprinklerState');
         } else if (user.restaurantName === "Plaza De Shalom") {
             temperatureRef = firebase.database().ref('/PlazaShalom/Temperature');
             smokeRef = firebase.database().ref('/PlazaShalom/Smoke');
             gasRef = firebase.database().ref('/PlazaShalom/Gas');
             fireRef = firebase.database().ref('/PlazaShalom/Fire');
+            countRef = firebase.database().ref('/PlazaShalom/Countdown');
+            sprinklerRef = firebase.database().ref('/PlazaShalom/SprinklerState');
         } else if (user.restaurantName === "Don Lauro Restaurant") {
             temperatureRef = firebase.database().ref('/DonLauro/Temperature');
             smokeRef = firebase.database().ref('/DonLauro/Smoke');
             gasRef = firebase.database().ref('/DonLauro/Gas');
             fireRef = firebase.database().ref('/DonLauro/Fire');
+            countRef = firebase.database().ref('/DonLauro/Countdown');
+            sprinklerRef = firebase.database().ref('/DonLauro/SprinklerState');
         }
     
         setLoading(true);
@@ -101,16 +110,45 @@ const DashboardScreen = ({ navigation }) => {
                 }
             });
         }
+
+        if (countRef) {
+            // Listen for changes in Fire data
+            countRef.on('value', (snapshot) => {
+                try {
+                    const countValue = snapshot.val();
+                    setCountdown(countValue);
+                    setLoading(false);
+                } catch (error) {
+                    console.error('Error reading countdown:', error);
+                    setLoading(false);
+                }
+            });
+        }
+       
+        if (sprinklerRef) {
+            // Listen for changes in Fire data
+            sprinklerRef.on('value', (snapshot) => {
+                try {
+                    const sprinklerValue = snapshot.val();
+                    setSprinkler(sprinklerValue);
+                    setLoading(false);
+                } catch (error) {
+                    console.error('Error reading sprinkler:', error);
+                    setLoading(false);
+                }
+            });
+        }
     
         return () => {
             if (temperatureRef) temperatureRef.off();
             if (smokeRef) smokeRef.off();
             if (gasRef) gasRef.off();
             if (fireRef) fireRef.off();
+            if (countRef) countRef.off();
+            if (sprinklerRef) sprinklerRef.off();
         };
     }, [user]);
     
-
     const getTemperatureTextColor = () => {
         if (temperature > 30) {
             return '#FF474D';
@@ -267,7 +305,7 @@ const DashboardScreen = ({ navigation }) => {
                     style={styles.modelImage}
                 />
                 {
-                    fire == "Fire Detected!" ? (
+                    fire == "Fire Detected!" || countdown != 0 || sprinkler !== "OFF" ? (
                         <TouchableOpacity style={styles.fireDetectionContainer} onPress={handleGoToSprinkler}>
                             {/* <View > */}
                                 <View style={styles.tailContainer}>

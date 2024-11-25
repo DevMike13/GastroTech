@@ -39,6 +39,7 @@ import AdminCazaReportScreen from '../screens/Reports/Admin/Caza/AdminCazaReport
 import AdminLauroReportScreen from '../screens/Reports/Admin/Lauro/AdminLauroReportScreen';
 import AdminShalomReportScreen from '../screens/Reports/Admin/Shalom/AdminShalomReportScreen';
 import NotificationScreen from '../screens/Notifications/NotificationScreen';
+import AgreementScreen from '../screens/Agreement/AgreementScreen';
 
 const AppNavigator = ({ navigation }) => {
     
@@ -792,6 +793,11 @@ const AppNavigator = ({ navigation }) => {
                                 <Stack.Screen 
                                     name="Guide" 
                                     component={GuideScreen} 
+                                    options={{ headerShown: false }}
+                                />
+                                <Stack.Screen 
+                                    name="Agreement" 
+                                    component={AgreementScreen} 
                                     options={{ headerShown: false }}
                                 />
                                 <Stack.Screen 
