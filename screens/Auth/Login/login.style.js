@@ -19,7 +19,9 @@ const styles = StyleSheet.create({
     },
     contentContainer:{
         display: 'flex',
+        width: "90%",
         flexDirection: 'column',
+        alignItems: 'center',
         gap: SIZES.large
     },
     inputContainer:{

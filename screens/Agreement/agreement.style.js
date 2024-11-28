@@ -17,10 +17,19 @@ const styles = StyleSheet.create({
         marginTop: SIZES.xxLarge,
         gap: SIZES.xxLarge
     },
+    mainTitleText:{
+        fontFamily: FONT.bold,
+        paddingTop: SIZES.xxxLarge + 10,
+        paddingBottom: 20,
+        paddingHorizontal: SIZES.small,
+        fontSize: SIZES.large,
+        color: COLORS.lightWhite
+    },
     headingText:{
         fontFamily: FONT.medium,
-        paddingVertical: SIZES.xxxLarge + 10,
         paddingHorizontal: SIZES.small,
+        paddingBottom: SIZES.medium,
+        textAlign: 'justify',
         color: COLORS.lightWhite
     },
     titleText:{
@@ -33,7 +42,8 @@ const styles = StyleSheet.create({
         fontFamily: FONT.regular,
         paddingHorizontal: SIZES.small,
         color: COLORS.lightWhite,
-        marginVertical: SIZES.medium
+        marginVertical: SIZES.medium,
+        textAlign: 'justify',
     },
     buttonContainer:{
         width: '100%',

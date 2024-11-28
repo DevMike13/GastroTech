@@ -17,6 +17,7 @@ const AgreementScreen = ({ navigation }) => {
                 locations={[0, 0.4, 1]}
                 style={styles.gradientBackground}
             >
+                <Text style={styles.mainTitleText}>Non-Disclosure Agreement</Text>
                 <Text style={styles.headingText}>
                     This Non-Disclosure Agreement
                     ("Agreement") is made between [Nathaniel Gamboa, Fesariton Jerome, and Ken Ingco]

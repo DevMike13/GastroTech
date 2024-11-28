@@ -400,6 +400,7 @@ const AdminShalomReportScreen = () => {
                                                     marginVertical: 8,
                                                     borderRadius: 10
                                                 }}
+                                                withHorizontalLabels={false}
                                                 renderDotContent={({ x, y, index }) => {
                                                     const dataValue = fireData.datasets[0].data[index]; 
                                                     
@@ -470,6 +471,7 @@ const AdminShalomReportScreen = () => {
                                                 marginVertical: 8,
                                                 borderRadius: 10
                                             }}
+                                            withHorizontalLabels={false}
                                             renderDotContent={({ x, y, index }) => {
                                                 const dataValue = smokeData.datasets[0].data[index];
 

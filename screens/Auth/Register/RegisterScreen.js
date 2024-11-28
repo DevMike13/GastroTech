@@ -1,6 +1,7 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, ScrollView, Platform, ActivityIndicator } from 'react-native';
 import React, { useState, useContext, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import { SelectList } from 'react-native-dropdown-select-list';
@@ -97,8 +98,14 @@ const RegisterScreen = ({ navigation }) => {
                 visibilityTime: 3000,
             });
             setIsLoading(false);
-            // Optionally navigate to the home screen or another screen after registration
-            // navigation.navigate('Home'); // Uncomment if needed
+
+            setTimeout(() => {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Login' }],
+                });
+            }, 3000);
+            
         } catch (error) {
             
             Toast.show({

@@ -109,11 +109,14 @@ const LoginScreen = ({ navigation }) => {
       >
         <View style={styles.container}>
           <View style={styles.contentContainer}>
-            <Image
-              source={require('../../../assets/images/welcome.png')}
-              resizeMode='contain'
-              style={{ width: 350 }}
-            />
+            <View style={{ width: '90%', height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                source={require('../../../assets/images/logo.png')}
+                resizeMode='contain'
+                style={{ width: 200}}
+              />
+            </View>
+            
             <View style={styles.inputContainer}>
               <View style={styles.inputWrapper}>
                 <TextInput
