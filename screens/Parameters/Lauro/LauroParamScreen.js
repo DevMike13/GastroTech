@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, ActivityIndicator, Modal } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, ActivityIndicator } from 'react-native'
 import {React, useState, useContext, useEffect, useCallback } from 'react'
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,13 +8,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { firebase } from '../../../firebase';
 import { UserContext } from '../../../UserContext';
 
-import styles from './dashboard.style';
+import styles from './param.style';
 
-const DashboardScreen = ({ navigation }) => {
-    const [gasModal, setGasModal] = useState(false);
-    const [smokeModal, setSmokeModal] = useState(false);
-    const [tempModal, setTempModal] = useState(false);
-    
+const LauroParamScreen = ({ navigation }) => {
     const [temperature, setTemperature] = useState(null);
     const [smoke, setSmoke] = useState(null);
     const [gas, setGas] = useState(null);
@@ -34,29 +30,13 @@ const DashboardScreen = ({ navigation }) => {
     
         let temperatureRef, smokeRef, gasRef, fireRef, countRef, sprinklerRef;
         
-        if (user.restaurantName === "Caza Plaza") {
-            temperatureRef = firebase.database().ref('/CazaPlaza/Temperature');
-            smokeRef = firebase.database().ref('/CazaPlaza/Smoke');
-            gasRef = firebase.database().ref('/CazaPlaza/Gas');
-            fireRef = firebase.database().ref('/CazaPlaza/Fire');
-            countRef = firebase.database().ref('/CazaPlaza/Countdown');
-            sprinklerRef = firebase.database().ref('/CazaPlaza/SprinklerState');
-        } else if (user.restaurantName === "Plaza De Shalom") {
-            temperatureRef = firebase.database().ref('/PlazaShalom/Temperature');
-            smokeRef = firebase.database().ref('/PlazaShalom/Smoke');
-            gasRef = firebase.database().ref('/PlazaShalom/Gas');
-            fireRef = firebase.database().ref('/PlazaShalom/Fire');
-            countRef = firebase.database().ref('/PlazaShalom/Countdown');
-            sprinklerRef = firebase.database().ref('/PlazaShalom/SprinklerState');
-        } else if (user.restaurantName === "Don Lauro Restaurant") {
-            temperatureRef = firebase.database().ref('/DonLauro/Temperature');
-            smokeRef = firebase.database().ref('/DonLauro/Smoke');
-            gasRef = firebase.database().ref('/DonLauro/Gas');
-            fireRef = firebase.database().ref('/DonLauro/Fire');
-            countRef = firebase.database().ref('/DonLauro/Countdown');
-            sprinklerRef = firebase.database().ref('/DonLauro/SprinklerState');
-        }
-    
+        temperatureRef = firebase.database().ref('/DonLauro/Temperature');
+        smokeRef = firebase.database().ref('/DonLauro/Smoke');
+        gasRef = firebase.database().ref('/DonLauro/Gas');
+        fireRef = firebase.database().ref('/DonLauro/Fire');
+        countRef = firebase.database().ref('/DonLauro/Countdown');
+        sprinklerRef = firebase.database().ref('/DonLauro/SprinklerState');
+        
         setLoading(true);
     
         if (temperatureRef) {
@@ -158,7 +138,7 @@ const DashboardScreen = ({ navigation }) => {
             return '#FF474D';
         } else if (temperature < 15) {
             return 'lightblue';
-        } else { 
+        } else {
             return '#90EE90'; 
         }
     };
@@ -185,40 +165,6 @@ const DashboardScreen = ({ navigation }) => {
         } else {
             return '#FF474D'; 
         }
-    };
-
-    useEffect(() => {
-        // Check conditions
-        if (smoke === "Smoke Detected!") {
-            setSmokeModal(true);
-        } else {
-            setSmokeModal(false);
-        }
-
-        if (gas > 30) {
-            setGasModal(true);
-        }  else {
-            setGasModal(false);
-        }
-        
-        if (temperature > 40) {
-            setTempModal(true);
-        } else {
-            setTempModal(false);
-        }
-        
-    }, [smoke, gas, temperature]);
-
-    const closeGasModal = () => {
-        setGasModal(false);
-    };
-
-    const closeSmokeModal = () => {
-        setSmokeModal(false);
-    };
-
-    const closeTempModal = () => {
-        setTempModal(false);
     };
 
   return (
@@ -342,80 +288,11 @@ const DashboardScreen = ({ navigation }) => {
                     resizeMode='contain'
                     style={styles.modelImage}
                 />
-                {
-                    fire == "Fire Detected!" || countdown != 0 || sprinkler !== "OFF" ? (
-                        <TouchableOpacity style={styles.fireDetectionContainer} onPress={handleGoToSprinkler}>
-                            {/* <View > */}
-                                <View style={styles.tailContainer}>
-                                    <Image
-                                        source={require('../../../assets/images/emergency.png')}
-                                        resizeMode='contain'
-                                        style={styles.emergencyImage}
-                                    />
-                                    <View style={styles.tail} />
-                                </View>
-                            {/* </View> */}
-                        </TouchableOpacity>
-                    ) : (
-                        <></>
-                    )
-                }
-            
             </View>
         </View>
-        <Modal
-            transparent={true}
-            visible={gasModal}
-            animationType="fade"
-            onRequestClose={() => setGasModal(false)}
-        >
-            <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                    <Text style={styles.modalTitleText}>Gas Alert</Text>
-                    <Text style={styles.modalText}>Gas is Increasing Please Activate Exhaust Fan and Check your Surroundings!!!</Text>
-                    <TouchableOpacity style={styles.modalButton}>
-                        <Text style={styles.modalButtonText} onPress={closeGasModal}>Ok</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </Modal> 
-
-        <Modal
-            transparent={true}
-            visible={smokeModal}
-            animationType="fade"
-            onRequestClose={() => setSmokeModal(false)}
-        >
-            <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                    <Text style={styles.modalTitleText}>Smoke Alert</Text>
-                    <Text style={styles.modalText}>Smoke is Increasing Please Activate Exhaust Fan and Check your Surroundings!!!</Text>
-                    <TouchableOpacity style={styles.modalButton}>
-                        <Text style={styles.modalButtonText} onPress={closeSmokeModal}>Ok</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </Modal>
-
-        <Modal
-            transparent={true}
-            visible={tempModal}
-            animationType="fade"
-            onRequestClose={() => setTempModal(false)}
-        >
-            <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                    <Text style={styles.modalTitleText}>Temperature Alert</Text>
-                    <Text style={styles.modalText}>Temperature is Increasing Please Activate Exhaust Fan and Check your Surroundings!!!</Text>
-                    <TouchableOpacity style={styles.modalButton}>
-                        <Text style={styles.modalButtonText} onPress={closeTempModal}>Ok</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </Modal>
       </LinearGradient>
     </SafeAreaView>
   )
 }
 
-export default DashboardScreen
+export default LauroParamScreen

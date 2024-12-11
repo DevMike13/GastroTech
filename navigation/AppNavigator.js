@@ -40,6 +40,9 @@ import AdminLauroReportScreen from '../screens/Reports/Admin/Lauro/AdminLauroRep
 import AdminShalomReportScreen from '../screens/Reports/Admin/Shalom/AdminShalomReportScreen';
 import NotificationScreen from '../screens/Notifications/NotificationScreen';
 import AgreementScreen from '../screens/Agreement/AgreementScreen';
+import CazaParamScreen from '../screens/Parameters/Caza/CazaParamScreen';
+import LauroParamScreen from '../screens/Parameters/Lauro/LauroParamScreen';
+import ShalomParamScreen from '../screens/Parameters/Shalom/ShalomParamScreen';
 
 const AppNavigator = ({ navigation }) => {
     
@@ -396,6 +399,68 @@ const AppNavigator = ({ navigation }) => {
                                                         <Ionicons name="arrow-back-outline" size={32} color="white" />
                                                         <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
                                                             Accounts
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        />
+
+                                        <Stack.Screen 
+                                            name="CazaParam" 
+                                            component={CazaParamScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                        <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            Caza Plaza Parameters
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        />
+                                        <Stack.Screen 
+                                            name="LauroParam" 
+                                            component={LauroParamScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                        <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            Don Lauro Parameters
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        />
+
+                                        <Stack.Screen 
+                                            name="ShalomParam" 
+                                            component={ShalomParamScreen} 
+                                            options={({ navigation }) => ({
+                                                headerShown: true,
+                                                headerTitle: '',
+                                                headerShadowVisible: true,
+                                                headerStyle: {
+                                                    backgroundColor: '#11774e'
+                                                },
+                                                headerLeft: () => (
+                                                    <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, gap: SIZES.small }} onPress={() => navigation.goBack()}>
+                                                        <Ionicons name="arrow-back-outline" size={32} color="white" />
+                                                        <Text style={{ fontFamily: FONT.bold, fontSize: SIZES.large, color: COLORS.white }}>
+                                                            Plaza Shalom Parameters
                                                         </Text>
                                                     </TouchableOpacity>
                                                 )

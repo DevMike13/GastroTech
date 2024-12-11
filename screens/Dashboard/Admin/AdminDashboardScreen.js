@@ -1,5 +1,6 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput } from 'react-native'
-import {React, useState, useContext, useEffect} from 'react'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, TextInput, Modal } from 'react-native'
+import {React, useState, useContext, useEffect, useCallback} from 'react'
+import { useFocusEffect  } from '@react-navigation/native'; 
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { firebase } from '../../../firebase';
@@ -11,6 +12,7 @@ import styles from './addash.style';
 const AdminDashboardScreen = ({ navigation }) => {
 
     const { user } = useContext(UserContext);
+    
     const handleGoToLocations = () => {
         navigation.navigate('Locations');
     }
@@ -40,6 +42,11 @@ const AdminDashboardScreen = ({ navigation }) => {
         navigation.navigate('Restaurants');
     }
 
+    const handleGoToRestaurantsModal = () => {
+        navigation.navigate('Restaurants');
+        setShowModal(false); 
+    }
+
     const handleGoToAccount = () => {
         navigation.navigate('Account');
     }
@@ -59,6 +66,9 @@ const AdminDashboardScreen = ({ navigation }) => {
         PlazaShalom: 'No Detection',
         DonLauro: 'No Detection'
     });
+
+    const [showModal, setShowModal] = useState(false);
+    const [focusKey, setFocusKey] = useState(0);
 
     useEffect(() => {
         const statusRefs = [
@@ -84,12 +94,23 @@ const AdminDashboardScreen = ({ navigation }) => {
         return () => {
             statusRefs.forEach(({ ref }) => ref.off('value'));
         };
-    }, []);
+    }, [focusKey]);
 
     useEffect(() => {
+        
         const count = Object.values(statuses).filter(status => status === 'Fire Detected!').length;
         setFireDetectedCount(count);
-    }, [statuses]);
+
+        console.log("Statuses: ", statuses);
+        console.log("Fire Detected Count: ", count);
+
+        if (count > 0) {
+            setShowModal(true);
+        } else {
+            setShowModal(false);
+        }
+        
+    }, [statuses, focusKey]);
 
     useEffect(() => {
         const unsubscribe = firebase.firestore()
@@ -99,7 +120,13 @@ const AdminDashboardScreen = ({ navigation }) => {
                 setNewStatusCount(snapshot.size);
             });
         return () => unsubscribe();
-    }, []);
+    }, [focusKey]);
+
+    useFocusEffect(
+        useCallback(() => {
+            setFocusKey(prevKey => prevKey + 1); // Trigger re-render by updating `focusKey`
+        }, [])
+    );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -210,6 +237,23 @@ const AdminDashboardScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             
+            <Modal
+                transparent={true}
+                visible={showModal}
+                animationType="fade"
+                onRequestClose={() => setShowModal(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitleText}>Emergency Alert</Text>
+                        <Text style={styles.modalText}>Unsafe Status Please Check Restaurants!!!</Text>
+                        <TouchableOpacity style={styles.modalButton} onPress={handleGoToRestaurantsModal}>
+                            <Text style={styles.modalButtonText}>Ok</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal> 
+
             <View style={styles.modelContainer}>
                 <Image
                     source={require('../../../assets/images/model.png')}

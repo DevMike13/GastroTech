@@ -26,6 +26,18 @@ const AdminReportScreen = ({ navigation }) => {
         navigation.navigate("AdminReportShalom")
     }
 
+    const handleGoToCazaParam = () => {
+        navigation.navigate("CazaParam")
+    }
+
+    const handleGoToLauroParam = () => {
+        navigation.navigate("LauroParam")
+    }
+
+    const handleGoToShalomParam = () => {
+        navigation.navigate("ShalomParam")
+    }
+
     useEffect(() => {
         const fetchRestaurants = async () => {
             try {
@@ -113,6 +125,9 @@ const AdminReportScreen = ({ navigation }) => {
                         <DataTable.Title>
                             <Text style={styles.tableTitleText}>Reports</Text>
                         </DataTable.Title>
+                        <DataTable.Title>
+                            <Text style={styles.tableTitleText}>Parameters</Text>
+                        </DataTable.Title>
                     </DataTable.Header>
 
                     {filteredRestaurants.map(restaurantData => (
@@ -129,6 +144,23 @@ const AdminReportScreen = ({ navigation }) => {
                                     </TouchableOpacity>
                                 ) : restaurantData.restaurant_name === "Plaza De Shalom" ? (
                                     <TouchableOpacity style={styles.viewButton} onPress={handleGoToShalomReport}>
+                                        <Text style={styles.viewButtonText}>View</Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <></>
+                                )}
+                            </DataTable.Cell>
+                            <DataTable.Cell>
+                                {restaurantData.restaurant_name === "Caza Plaza" ? (
+                                    <TouchableOpacity style={styles.viewButton} onPress={handleGoToCazaParam}>
+                                        <Text style={styles.viewButtonText}>View</Text>
+                                    </TouchableOpacity>
+                                ) : restaurantData.restaurant_name === "Don Lauro Restaurant" ? (
+                                    <TouchableOpacity style={styles.viewButton} onPress={handleGoToLauroParam}>
+                                        <Text style={styles.viewButtonText}>View</Text>
+                                    </TouchableOpacity>
+                                ) : restaurantData.restaurant_name === "Plaza De Shalom" ? (
+                                    <TouchableOpacity style={styles.viewButton} onPress={handleGoToShalomParam}>
                                         <Text style={styles.viewButtonText}>View</Text>
                                     </TouchableOpacity>
                                 ) : (

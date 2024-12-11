@@ -23,7 +23,7 @@ const AgreementScreen = ({ navigation }) => {
                     ("Agreement") is made between [Nathaniel Gamboa, Fesariton Jerome, and Ken Ingco]
                     ("Disclosing Party"), researchers for capstone project
                     and [Developer's] ("Receiving Party") as of
-                    [Date]. The Disclosing Party intends to
+                    December 7, 2024. The Disclosing Party intends to
                     share certain confidential and proprietary
                     information related to the development of
                     the GastroTech application, including but
@@ -108,7 +108,7 @@ const AgreementScreen = ({ navigation }) => {
                 <Text style={styles.contentText}>
                     The confidentiality obligations under this
                     Agreement shall continue for a period of
-                    [Insert Number] years from the date of
+                    5 years from the date of
                     disclosure of the Confidential Information.
                 </Text>
 
@@ -132,7 +132,7 @@ const AgreementScreen = ({ navigation }) => {
                 <Text style={styles.contentText}>
                     This Agreement shall be governed by and
                     construed in accordance with the laws of
-                    [Insert Jurisdiction].
+                    in accordance with the National Building Code (Republic Act No.6541) outlines the standard as for building safety including fire protection, ventilation and emergency evacuation systems.
                 </Text>
 
                 <Text style={styles.titleText}>

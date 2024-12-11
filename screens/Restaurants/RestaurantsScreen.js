@@ -37,15 +37,22 @@ const RestaurantsScreen = ({ navigation }) => {
             }
         };
 
-        const listenForFireStatus = (restaurantData) => {
-            restaurantData.forEach(restaurant => {
-                const fireRef = firebase.database().ref(`${restaurant.rtdb}/Fire`);
+        const listenForFireStatus = () => {
+            // Hardcoded paths for the restaurants
+            const restaurantPaths = [
+                'CazaPlaza',
+                'DonLauro',
+                'PlazaShalom',
+            ];
+
+            restaurantPaths.forEach((restaurant) => {
+                const fireRef = firebase.database().ref(`/${restaurant}/Fire`);
 
                 fireRef.on('value', (snapshot) => {
                     const fireStatus = snapshot.val();
                     setStatus(prevStatus => ({
                         ...prevStatus,
-                        [restaurant.rtdb]: fireStatus || 'Loading...',
+                        [restaurant]: fireStatus || 'Loading...',
                     }));
                 });
             });
@@ -54,8 +61,14 @@ const RestaurantsScreen = ({ navigation }) => {
 
         fetchRestaurants(); 
         return () => {
-            restaurants.forEach(restaurant => {
-                const fireRef = firebase.database().ref(`${restaurant.rtdb}/Fire`);
+            const restaurantPaths = [
+                'CazaPlaza',
+                'DonLauro',
+                'PlazaShalom',
+            ];
+
+            restaurantPaths.forEach((restaurant) => {
+                const fireRef = firebase.database().ref(`/${restaurant}/Fire`);
                 fireRef.off('value');
             });
         };
@@ -66,7 +79,7 @@ const RestaurantsScreen = ({ navigation }) => {
             restaurant.restaurant_name.toLowerCase().includes(searchQuery.toLowerCase())
         );
     });
-
+ 
     return (
         <SafeAreaView style={styles.container}>
             <LinearGradient
@@ -113,7 +126,7 @@ const RestaurantsScreen = ({ navigation }) => {
                             <DataTable.Cell>{restaurantData.restaurant_name}</DataTable.Cell>
                             <DataTable.Cell>{restaurantData.address}</DataTable.Cell>
                             <DataTable.Cell>
-                                {status[restaurantData.rtdb] === 'Fire Detected' 
+                                {status[restaurantData.rtdb] === 'Fire Detected!' 
                                 ? (
                                     <Text style={styles.statusText}>
                                         Fire Detected

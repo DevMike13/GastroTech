@@ -72,6 +72,50 @@ const styles = StyleSheet.create({
     modelImage:{
         width: 200,
         height: 180,
+    },
+    // Modal Specific Styles
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // semi-transparent background
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        width: '80%',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 10,
+    },
+    modalText: {
+        fontFamily: FONT.medium,
+        fontSize: 14,
+        color: '#444',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    modalButton: {
+        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 100,
+        paddingHorizontal: 30,
+        paddingVertical: 8
+    },
+    modalButtonText: {
+        fontFamily: FONT.medium,
+        fontSize: 16
+    },
+    modalTitleText:{
+        fontFamily: FONT.bold,
+        fontSize: SIZES.medium,
+        marginBottom: SIZES.large
     }
 });
 
