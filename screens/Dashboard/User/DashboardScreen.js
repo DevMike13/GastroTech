@@ -14,6 +14,8 @@ const DashboardScreen = ({ navigation }) => {
     const [gasModal, setGasModal] = useState(false);
     const [smokeModal, setSmokeModal] = useState(false);
     const [tempModal, setTempModal] = useState(false);
+
+    const [allModal, setAllModal] = useState(false);
     
     const [temperature, setTemperature] = useState(null);
     const [smoke, setSmoke] = useState(null);
@@ -206,20 +208,35 @@ const DashboardScreen = ({ navigation }) => {
         } else {
             setTempModal(false);
         }
+
+        if(smoke === "Smoke Detected!" && gas > 30 && temperature > 40){
+            setAllModal(true);
+        } else {
+            setAllModal(false);
+        }
         
     }, [smoke, gas, temperature]);
 
     const closeGasModal = () => {
+        navigation.navigate('Device');
         setGasModal(false);
     };
 
     const closeSmokeModal = () => {
+        navigation.navigate('Device');
         setSmokeModal(false);
     };
 
     const closeTempModal = () => {
+        navigation.navigate('Device');
         setTempModal(false);
     };
+
+    const closeAllModal = () => {
+        navigation.navigate('Device');
+        setAllModal(false);
+    };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -409,6 +426,23 @@ const DashboardScreen = ({ navigation }) => {
                     <Text style={styles.modalText}>Temperature is Increasing Please Activate Exhaust Fan and Check your Surroundings!!!</Text>
                     <TouchableOpacity style={styles.modalButton}>
                         <Text style={styles.modalButtonText} onPress={closeTempModal}>Ok</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
+
+        <Modal
+            transparent={true}
+            visible={allModal}
+            animationType="fade"
+            onRequestClose={() => setAllModal(false)}
+        >
+            <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                    <Text style={styles.modalTitleText}>Emergency Alert</Text>
+                    <Text style={styles.modalText}>Smoke, Gas and Temperature is Increasing please Check your Surroundings!!!</Text>
+                    <TouchableOpacity style={styles.modalButton}>
+                        <Text style={styles.modalButtonText} onPress={closeAllModal}>Ok</Text>
                     </TouchableOpacity>
                 </View>
             </View>
